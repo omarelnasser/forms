@@ -31,13 +31,13 @@
     // 📝 Handle submission
     document.getElementById('myForm').addEventListener('submit', async (e) => {
       e.preventDefault()
-      const name = document.getElementById('name').value
+      const firstname = document.getElementById('name').value
       const email = document.getElementById('email').value
       const form_code = document.getElementById('form_code').value
 
       const { data, error } = await supabase
         .from('form_submissions')
-        .insert([{ name, email, form_code }])
+        .insert([{ firstname, email, form_code }])
 
       if (error) {
         alert('❌ Error: ' + error.message)
