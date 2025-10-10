@@ -88,7 +88,7 @@
         <div class="form-group">
           <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
           <input type="text" id="parentfirstname" placeholder="Jane" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-              </div>
+        </div>
         <div class="form-group">
           <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
           <input type="text" id="parentlastname" placeholder="Doe" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
@@ -139,14 +139,14 @@
 
     // 📞 Phone number rules per country
     const phoneRules = {
-      '+20': 10,  // Egypt (10 digits)
-      '+249': 9,  // Sudan (9 digits)
-      '+971': 9,  // UAE (9 digits)
-      '+966': 9,  // Saudi Arabia (9 digits)
-      '+973': 8,  // Bahrain (8 digits)
-      '+968': 8,  // Oman (8 digits)
-      '+965': 8,  // Kuwait (8 digits)
-      '+974': 8   // Qatar (8 digits)
+      '+20': 10,  // Egypt
+      '+249': 9,  // Sudan
+      '+971': 9,  // UAE
+      '+966': 9,  // Saudi Arabia
+      '+973': 8,  // Bahrain
+      '+968': 8,  // Oman
+      '+965': 8,  // Kuwait
+      '+974': 8   // Qatar
     }
 
     const setupPhoneInput = (selectId, inputId, flagId) => {
@@ -156,29 +156,12 @@
 
       select.addEventListener('change', () => {
         const selected = select.options[select.selectedIndex]
-        const countryCode = select.value
         const flagUrl = selected.getAttribute('data-flag')
         flag.src = flagUrl || ''
-        
-        const ruleLength = phoneRules[countryCode]
-
-        if (ruleLength) {
-          // Set input value to '1' and adjust length
-          input.value = '1'
-          
-          // The maximum length is the rule length (e.g., 10 for EG) + 1 for the pre-filled '1'
-          const max = ruleLength + 1
-          input.maxLength = max
-          
-          // Create a placeholder that starts with 1
-          const placeholderX = 'X'.repeat(ruleLength)
-          input.placeholder = `1${placeholderX} (${max} digits)`
-        } else {
-          // If no country is selected or rule is missing
-          input.value = ''
-          input.maxLength = 15 // Default max
-          input.placeholder = "Enter phone number"
-        }
+        const max = phoneRules[select.value] || 15
+        input.maxLength = max
+        input.value = ''
+        input.placeholder = `Up to ${max} digits`
       })
     }
 
@@ -188,25 +171,6 @@
     // 🧠 Helpers
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-    
-    // --- NEW VALIDATION ADDED HERE ---
-    const validatePhoneNumber = (countryCode, numberInputId) => {
-      const input = document.getElementById(numberInputId)
-      const value = input.value.trim()
-      const ruleLength = phoneRules[countryCode]
-
-      if (!ruleLength) return true // No rule, no specific validation
-
-      // Check for '1' at the start and the exact required length
-      if (value.length !== ruleLength + 1 || !value.startsWith('1')) {
-        alert(`❌ Phone number for ${countryCode} must start with '1' and be exactly ${ruleLength + 1} digits long.`)
-        input.focus()
-        return false
-      }
-      return true
-    }
-    // --- END NEW VALIDATION ---
-
 
     document.getElementById('myForm').addEventListener('submit', async (e) => {
       e.preventDefault()
@@ -233,13 +197,6 @@
         alert('❌ Please enter valid email addresses.')
         return
       }
-      
-      // --- RUN NEW VALIDATION BEFORE SUBMISSION ---
-      if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
-        return
-      }
-      // --- END RUN NEW VALIDATION ---
-
 
       const submissionData = {
         firstname, lastname, email, number,
