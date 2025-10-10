@@ -6,14 +6,10 @@
   <title>User Registration Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .form-group {
-      margin-bottom: 1rem;
-    }
+    .form-group { margin-bottom: 1rem; }
     .input-field {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 0.375rem;
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db; border-radius: 0.375rem;
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
     .input-field:focus {
@@ -21,17 +17,18 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
       outline: none;
     }
-    .phone-input-group {
-      display: flex;
-      gap: 0.5rem;
+    .phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
+    .country-select-wrapper {
+      position: relative; flex-shrink: 0; display: flex; align-items: center;
+    }
+    .flag-icon {
+      position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
     }
     .country-code-select {
-      width: 30%;
-      flex-shrink: 0;
+      padding-left: 2.2rem; /* room for flag */
+      width: 110px; appearance: none;
     }
-    .phone-number-input {
-      flex-grow: 1;
-    }
+    .phone-number-input { flex-grow: 1; }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
@@ -68,14 +65,20 @@
       <div class="form-group">
         <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
         <div class="phone-input-group">
-          <select id="country_code" class="input-field country-code-select" required>
-            <option value="">Code</option>
-            <option value="+1">+1 (USA/Canada)</option>
-            <option value="+44">+44 (UK)</option>
-            <option value="+91">+91 (India)</option>
-            <option value="+20">+20 (Egypt)</option>
-            <option value="+49">+49 (Germany)</option>
-          </select>
+          <div class="country-select-wrapper">
+            <img id="flag_user" class="flag-icon" src="" alt="">
+            <select id="country_code" class="input-field country-code-select" required>
+              <option value="">Code</option>
+              <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+              <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+              <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+              <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+              <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+              <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+              <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+              <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+            </select>
+          </div>
           <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
         </div>
       </div>
@@ -100,14 +103,20 @@
       <div class="form-group">
         <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
         <div class="phone-input-group">
-          <select id="parent_country_code" class="input-field country-code-select" required>
-            <option value="">Code</option>
-            <option value="+1">+1 (USA/Canada)</option>
-            <option value="+44">+44 (UK)</option>
-            <option value="+91">+91 (India)</option>
-            <option value="+20">+20 (Egypt)</option>
-            <option value="+49">+49 (Germany)</option>
-          </select>
+          <div class="country-select-wrapper">
+            <img id="flag_parent" class="flag-icon" src="" alt="">
+            <select id="parent_country_code" class="input-field country-code-select" required>
+              <option value="">Code</option>
+              <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+              <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+              <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+              <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+              <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+              <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+              <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+              <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+            </select>
+          </div>
           <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
         </div>
       </div>
@@ -126,86 +135,84 @@
     const supabase = createClient(supabaseUrl, supabaseKey)
 
     const urlParams = new URLSearchParams(window.location.search)
-    const formCode = urlParams.get('code') || 'default'
-    document.getElementById('form_code').value = formCode
+    document.getElementById('form_code').value = urlParams.get('code') || 'default'
 
-    // 📞 Limit phone number digits based on country code
+    // 📞 Phone number rules per country
     const phoneRules = {
-      '+20': 10, // Egypt
-      '+1': 10,  // USA/Canada
-      '+44': 10, // UK
-      '+91': 10, // India
-      '+49': 11  // Germany (example)
+      '+20': 10,  // Egypt
+      '+249': 9,  // Sudan
+      '+971': 9,  // UAE
+      '+966': 9,  // Saudi Arabia
+      '+973': 8,  // Bahrain
+      '+968': 8,  // Oman
+      '+965': 8,  // Kuwait
+      '+974': 8   // Qatar
     }
 
-    const setPhoneLimit = (selectId, inputId) => {
+    const setupPhoneInput = (selectId, inputId, flagId) => {
       const select = document.getElementById(selectId)
       const input = document.getElementById(inputId)
+      const flag = document.getElementById(flagId)
+
       select.addEventListener('change', () => {
+        const selected = select.options[select.selectedIndex]
+        const flagUrl = selected.getAttribute('data-flag')
+        flag.src = flagUrl || ''
         const max = phoneRules[select.value] || 15
         input.maxLength = max
         input.value = ''
-        input.placeholder = `Enter up to ${max} digits`
+        input.placeholder = `Up to ${max} digits`
       })
     }
 
-    setPhoneLimit('country_code', 'number')
-    setPhoneLimit('parent_country_code', 'parentnumber')
+    setupPhoneInput('country_code', 'number', 'flag_user')
+    setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
-    // 🧹 Email validation (no spaces, must include @ and .)
+    // 🧠 Helpers
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
     document.getElementById('myForm').addEventListener('submit', async (e) => {
       e.preventDefault()
 
-      const firstname = document.getElementById('firstname').value.trim()
-      const lastname = document.getElementById('lastname').value.trim()
-      const email = document.getElementById('email').value.trim()
+      let firstname = capitalize(document.getElementById('firstname').value.trim())
+      let lastname = capitalize(document.getElementById('lastname').value.trim())
+      let email = document.getElementById('email').value.trim().toLowerCase()
       const countryCode = document.getElementById('country_code').value
       const number = countryCode + document.getElementById('number').value.trim()
-      const parentfirstname = document.getElementById('parentfirstname').value.trim()
-      const parentlastname = document.getElementById('parentlastname').value.trim()
-      const parentemail = document.getElementById('parentemail').value.trim()
+      let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
+      let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
+      let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
       const parentCountryCode = document.getElementById('parent_country_code').value
       const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
       const dob = document.getElementById('dob').value
       const form_code = document.getElementById('form_code').value
 
-      // Extra validations
-      const nameFields = [firstname, lastname, parentfirstname, parentlastname]
-      if (nameFields.some(name => name.includes(' '))) {
+      if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
         alert('❌ Names cannot contain spaces.')
         return
       }
 
       if (!validateEmail(email) || !validateEmail(parentemail)) {
-        alert('❌ Please enter valid email addresses (no spaces, must contain @ and a dot).')
+        alert('❌ Please enter valid email addresses.')
         return
       }
 
       const submissionData = {
-        firstname,
-        lastname,
-        email,
-        number,
-        parentfirstname,
-        parentlastname,
-        parentemail,
-        parentnumber,
-        dob,
-        form_code
+        firstname, lastname, email, number,
+        parentfirstname, parentlastname, parentemail, parentnumber,
+        dob, form_code
       }
 
-      const { error } = await supabase
-        .from('form_submissions')
-        .insert([submissionData])
-
+      const { error } = await supabase.from('form_submissions').insert([submissionData])
       if (error) {
         console.error('Supabase Error:', error)
         alert('❌ Error submitting form: ' + error.message)
       } else {
         alert('✅ Registration submitted successfully!')
         e.target.reset()
+        document.getElementById('flag_user').src = ''
+        document.getElementById('flag_parent').src = ''
       }
     })
   </script>
