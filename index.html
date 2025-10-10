@@ -6,7 +6,6 @@
   <title>User Registration Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom styling for a slightly cleaner form look */
     .form-group {
       margin-bottom: 1rem;
     }
@@ -18,7 +17,7 @@
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
     .input-field:focus {
-      border-color: #3b82f6; /* Blue-500 */
+      border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
       outline: none;
     }
@@ -27,11 +26,11 @@
       gap: 0.5rem;
     }
     .country-code-select {
-      width: 30%; /* Smaller width for country code */
+      width: 30%;
       flex-shrink: 0;
     }
     .phone-number-input {
-      flex-grow: 1; /* Takes remaining space */
+      flex-grow: 1;
     }
   </style>
 </head>
@@ -46,12 +45,12 @@
       <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="form-group">
-          <label for="firstname" class="block text-sm font-medium text-gray-700">First Name (No Spaces)</label>
-          <input type="text" id="firstname" placeholder="John" required class="input-field name-input" />
+          <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
+          <input type="text" id="firstname" placeholder="John" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
         </div>
         <div class="form-group">
-          <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name (No Spaces)</label>
-          <input type="text" id="lastname" placeholder="Doe" required class="input-field name-input" />
+          <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
+          <input type="text" id="lastname" placeholder="Doe" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
         </div>
       </div>
       
@@ -69,188 +68,14 @@
       <div class="form-group">
         <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
         <div class="phone-input-group">
-          <select id="country_code" class="input-field country-code-select user-phone-code" required>
-            <option value="" data-digits="10">Code</option>
-            <option value="+1" data-digits="10">+1 (USA/Canada)</option>
-            <option value="+44" data-digits="10">+44 (UK)</option>
-            <option value="+91" data-digits="10">+91 (India)</option>
-            <option value="+20" data-digits="10">+20 (Egypt)</option>
-            <option value="+49" data-digits="9">+49 (Germany)</option>
-            </select>
-          <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
-        </div>
-      </div>
-
-      <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group">
-          <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name (No Spaces)</label>
-          <input type="text" id="parentfirstname" placeholder="Jane" required class="input-field name-input" />
-        </div>
-        <div class="form-group">
-          <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name (No Spaces)</label>
-          <input type="text" id="parentlastname" placeholder="Doe" required class="input-field name-input" />
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
-        <input type="email" id="parentemail" placeholder="jane.doe@example.com" required class="input-field" />
-      </div>
-
-      <div class="form-group">
-        <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
-        <div class="phone-input-group">
-          <select id="parent_country_code" class="input-field country-code-select parent-phone-code" required>
-            <option value="" data-digits="10">Code</option>
-            <option value="+1" data-digits="10">+1 (USA/Canada)</option>
-            <option value="+44" data-digits="10">+44 (UK)</option>
-            <option value="+91" data-digits="10">+91 (India)</option>
-            <option value="+20" data-digits="10">+20 (Egypt)</option>
-            <option value="+49" data-digits="9">+49 (Germany)</option>
-            </select>
-          <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
-        </div>
-      </div>
-      
-      <button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
-        Submit Registration
-      </button>
-    </form>
-  </div>
-
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-    // 🧠 Your Supabase credentials
-    const supabaseUrl = 'https://qxluetvkqxillhqsbubl.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwNjA1M30.11cD0yE0aJW1OIh0kB4EaWtCvg5nUkj-0QuTVk-C7zg'
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    // 🧩 Get form_code from URL
-    const urlParams = new URLSearchParams(window.location.search)
-    const formCode = urlParams.get('code') || 'default'
-    document.getElementById('form_code').value = formCode
-
-    // ==========================================================
-    // 💡 NEW: Client-Side Validation Logic
-    // ==========================================================
-
-    // 1. Prevent spaces in Name fields
-    document.querySelectorAll('.name-input').forEach(input => {
-      input.addEventListener('input', (e) => {
-        // Replace any space character globally with an empty string
-        e.target.value = e.target.value.replace(/\s/g, '');
-      });
-    });
-
-    // 2. Limit Phone Number input length based on Country Code
-    const phoneNumberRules = {
-        'country_code': 'number',
-        'parent_country_code': 'parentnumber'
-    };
-    
-    // Function to update the max length attribute
-    const updatePhoneNumberLength = (selectId, inputId) => {
-        const selectElement = document.getElementById(selectId);
-        const inputElement = document.getElementById(inputId);
-
-        selectElement.addEventListener('change', () => {
-            // Get the selected option element
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
-            // Get the data-digits attribute value, default to a safe length like 15
-            const maxDigits = selectedOption.getAttribute('data-digits') || '15'; 
-            
-            // Apply the max length to the phone number input
-            inputElement.setAttribute('maxlength', maxDigits);
-            
-            // Clear the input value when the country changes for better user experience
-            inputElement.value = '';
-            inputElement.placeholder = `Enter ${maxDigits} digits`;
-        });
-
-        // Trigger the change event on load to set the initial state (e.g., if a value is pre-selected)
-        selectElement.dispatchEvent(new Event('change'));
-    };
-
-    // Apply the length limit function to both phone number fields
-    updatePhoneNumberLength('country_code', 'number');
-    updatePhoneNumberLength('parent_country_code', 'parentnumber');
-
-    // 3. Ensure only numbers are entered in phone fields
-    document.querySelectorAll('.phone-number-input').forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            // Allow only digits (0-9)
-            const charCode = (e.which) ? e.which : e.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                e.preventDefault();
-            }
-        });
-    });
-
-
-    // ==========================================================
-    // 📝 Handle Submission (Unchanged from previous logic)
-    // ==========================================================
-    document.getElementById('myForm').addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      // --- Capture all form values ---
-      const firstname = document.getElementById('firstname').value.trim() // Trim spaces just in case
-      const lastname = document.getElementById('lastname').value.trim()
-      const email = document.getElementById('email').value
-      
-      // Combine country code and number for the user's phone
-      const countryCode = document.getElementById('country_code').value
-      const number = countryCode + document.getElementById('number').value.trim()
-      
-      const parentfirstname = document.getElementById('parentfirstname').value.trim()
-      const parentlastname = document.getElementById('parentlastname').value.trim()
-      const parentemail = document.getElementById('parentemail').value
-      
-      // Combine country code and number for the parent's phone
-      const parentCountryCode = document.getElementById('parent_country_code').value
-      const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
-      
-      const dob = document.getElementById('dob').value
-      const form_code = document.getElementById('form_code').value // Hidden field value
-
-      // --- Prepare data for Supabase ---
-      const submissionData = {
-        firstname, 
-        lastname, 
-        email, 
-        number, // Stored as the full number (code + digits)
-        parentfirstname, 
-        parentlastname, 
-        parentemail, 
-        parentnumber, // Stored as the full number (code + digits)
-        dob,
-        form_code
-      }
-
-      // --- Send data to Supabase ---
-      const { error } = await supabase
-        .from('form_submissions') // *** CHECK THIS TABLE NAME IN YOUR SUPABASE PROJECT ***
-        .insert([submissionData])
-
-      if (error) {
-        console.error('Supabase Error:', error)
-        alert('❌ Error submitting form: ' + error.message)
-      } else {
-        alert('✅ Registration submitted successfully!')
-        e.target.reset()
-      }
-    })
-  </script>
-</body>
-</html>
+          <select id="country_code" class="input-field country-code-select" required>
+            <option value="">Code</option>
             <option value="+1">+1 (USA/Canada)</option>
             <option value="+44">+44 (UK)</option>
             <option value="+91">+91 (India)</option>
             <option value="+20">+20 (Egypt)</option>
             <option value="+49">+49 (Germany)</option>
-            </select>
+          </select>
           <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
         </div>
       </div>
@@ -259,11 +84,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="form-group">
           <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
-          <input type="text" id="parentfirstname" placeholder="Jane" required class="input-field" />
+          <input type="text" id="parentfirstname" placeholder="Jane" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
         </div>
         <div class="form-group">
           <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
-          <input type="text" id="parentlastname" placeholder="Doe" required class="input-field" />
+          <input type="text" id="parentlastname" placeholder="Doe" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
         </div>
       </div>
       
@@ -282,7 +107,7 @@
             <option value="+91">+91 (India)</option>
             <option value="+20">+20 (Egypt)</option>
             <option value="+49">+49 (Germany)</option>
-            </select>
+          </select>
           <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
         </div>
       </div>
@@ -296,59 +121,83 @@
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-    // 🧠 Your Supabase credentials
     const supabaseUrl = 'https://qxluetvkqxillhqsbubl.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwNjA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg'
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // 🧩 Get form_code from URL (e.g. ?code=abc123)
     const urlParams = new URLSearchParams(window.location.search)
     const formCode = urlParams.get('code') || 'default'
     document.getElementById('form_code').value = formCode
 
-    // 📝 Handle submission
+    // 📞 Limit phone number digits based on country code
+    const phoneRules = {
+      '+20': 10, // Egypt
+      '+1': 10,  // USA/Canada
+      '+44': 10, // UK
+      '+91': 10, // India
+      '+49': 11  // Germany (example)
+    }
+
+    const setPhoneLimit = (selectId, inputId) => {
+      const select = document.getElementById(selectId)
+      const input = document.getElementById(inputId)
+      select.addEventListener('change', () => {
+        const max = phoneRules[select.value] || 15
+        input.maxLength = max
+        input.value = ''
+        input.placeholder = `Enter up to ${max} digits`
+      })
+    }
+
+    setPhoneLimit('country_code', 'number')
+    setPhoneLimit('parent_country_code', 'parentnumber')
+
+    // 🧹 Email validation (no spaces, must include @ and .)
+    const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
     document.getElementById('myForm').addEventListener('submit', async (e) => {
       e.preventDefault()
 
-      // --- Capture all form values ---
-      const firstname = document.getElementById('firstname').value
-      const lastname = document.getElementById('lastname').value
-      const email = document.getElementById('email').value
-      
-      // Combine country code and number for the user's phone
+      const firstname = document.getElementById('firstname').value.trim()
+      const lastname = document.getElementById('lastname').value.trim()
+      const email = document.getElementById('email').value.trim()
       const countryCode = document.getElementById('country_code').value
-      const number = countryCode + document.getElementById('number').value
-      
-      const parentfirstname = document.getElementById('parentfirstname').value
-      const parentlastname = document.getElementById('parentlastname').value
-      const parentemail = document.getElementById('parentemail').value
-      
-      // Combine country code and number for the parent's phone
+      const number = countryCode + document.getElementById('number').value.trim()
+      const parentfirstname = document.getElementById('parentfirstname').value.trim()
+      const parentlastname = document.getElementById('parentlastname').value.trim()
+      const parentemail = document.getElementById('parentemail').value.trim()
       const parentCountryCode = document.getElementById('parent_country_code').value
-      const parentnumber = parentCountryCode + document.getElementById('parentnumber').value
-      
+      const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
       const dob = document.getElementById('dob').value
-      const form_code = document.getElementById('form_code').value // Hidden field value
+      const form_code = document.getElementById('form_code').value
 
-      // --- Prepare data for Supabase ---
-      const submissionData = {
-        firstname, 
-        lastname, 
-        email, 
-        number, // Stored as the full number (code + digits)
-        parentfirstname, 
-        parentlastname, 
-        parentemail, 
-        parentnumber, // Stored as the full number (code + digits)
-        dob,
-        form_code // Assuming you have a form_code column for tracking
-        // Note: Supabase columns are case-sensitive if created with quotes, 
-        // but JavaScript variables should match the table's column names.
+      // Extra validations
+      const nameFields = [firstname, lastname, parentfirstname, parentlastname]
+      if (nameFields.some(name => name.includes(' '))) {
+        alert('❌ Names cannot contain spaces.')
+        return
       }
 
-      // --- Send data to Supabase ---
+      if (!validateEmail(email) || !validateEmail(parentemail)) {
+        alert('❌ Please enter valid email addresses (no spaces, must contain @ and a dot).')
+        return
+      }
+
+      const submissionData = {
+        firstname,
+        lastname,
+        email,
+        number,
+        parentfirstname,
+        parentlastname,
+        parentemail,
+        parentnumber,
+        dob,
+        form_code
+      }
+
       const { error } = await supabase
-        .from('form_submissions') // *** CHECK THIS TABLE NAME IN YOUR SUPABASE PROJECT ***
+        .from('form_submissions')
         .insert([submissionData])
 
       if (error) {
