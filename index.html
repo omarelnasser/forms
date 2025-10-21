@@ -5,28 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>User Registration Form</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <style>
 .form-group { margin-bottom: 1rem; }
 .input-field {
- width: 100%; padding: 0.75rem 1rem;
- border: 1px solid #d1d5db; border-radius: 0.375rem;
- transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+width: 100%; padding: 0.75rem 1rem;
+border: 1px solid #d1d5db; border-radius: 0.375rem;
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .input-field:focus {
- border-color: #3b82f6;
- box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
- outline: none;
+border-color: #3b82f6;
+box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+outline: none;
 }
 .phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
 .country-select-wrapper {
- position: relative; flex-shrink: 0; display: flex; align-items: center;
+position: relative; flex-shrink: 0; display: flex; align-items: center;
 }
 .flag-icon {
- position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
+position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
 }
 .country-code-select {
- padding-left: 2.2rem; /* room for flag */
- width: 110px; appearance: none;
+padding-left: 2.2rem; /* room for flag */
+width: 110px; appearance: none;
 }
 .phone-number-input { flex-grow: 1; }
 </style>
@@ -37,93 +38,101 @@
 <p class="text-center text-gray-500 mb-8">Please fill out all the required information below.</p>
 
 <form id="myForm" class="space-y-6">
- <input type="hidden" id="formid" />
+<input type="hidden" id="formid" />
 
- <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div class="form-group">
- <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
- <input type="text" id="firstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
- </div>
- <div class="form-group">
- <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
- <input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
- </div>
- </div>
+<h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="form-group">
+<label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
+<input type="text" id="firstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+</div>
+<div class="form-group">
+<label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
+<input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+</div>
+</div>
 
- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div class="form-group">
- <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
- <input type="email" id="email" placeholder="" required class="input-field" />
- </div>
- <div class="form-group">
- <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
- <input type="date" id="dob" required class="input-field" />
- </div>
- </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="form-group">
+<label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+<input type="email" id="email" placeholder="" required class="input-field" />
+</div>
+<div class="form-group">
+<label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+<input type="date" id="dob" required class="input-field" />
+</div>
+</div>
 
- <div class="form-group">
- <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
- <div class="phone-input-group">
- <div class="country-select-wrapper">
- <img id="flag_user" class="flag-icon" src="" alt="">
- <select id="country_code" class="input-field country-code-select" required>
-  <option value="">Code</option>
-  <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
-  <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
-  <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
-  <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
-  <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
-  <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
-  <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
-  <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
- </select>
- </div>
- <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
- </div>
- </div>
+<div class="form-group">
+<label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
+<div class="phone-input-group">
+<div class="country-select-wrapper">
+<img id="flag_user" class="flag-icon" src="" alt="">
+<select id="country_code" class="input-field country-code-select" required>
+ <option value="">Code</option>
+ <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+ <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+ <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+ <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+ <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+ <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+ <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+ <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+</select>
+</div>
+<input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
+</div>
+</div>
 
- <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div class="form-group">
- <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
- <input type="text" id="parentfirstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-  </div>
- <div class="form-group">
- <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
- <input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="form-group">
+<label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
+<input type="text" id="parentfirstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
  </div>
- </div>
+<div class="form-group">
+<label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
+<input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+</div>
+</div>
 
- <div class="form-group">
- <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
- <input type="email" id="parentemail" placeholder="" required class="input-field" />
- </div>
+<div class="form-group">
+<label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
+<input type="email" id="parentemail" placeholder="" required class="input-field" />
+</div>
 
- <div class="form-group">
- <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
- <div class="phone-input-group">
- <div class="country-select-wrapper">
- <img id="flag_parent" class="flag-icon" src="" alt="">
- <select id="parent_country_code" class="input-field country-code-select" required>
-  <option value="">Code</option>
-  <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
-  <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
-  <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
-  <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
-  <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
-  <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
-  <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
-  <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
- </select>
- </div>
- <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
- </div>
- </div>
+<div class="form-group">
+<label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
+<div class="phone-input-group">
+<div class="country-select-wrapper">
+<img id="flag_parent" class="flag-icon" src="" alt="">
+<select id="parent_country_code" class="input-field country-code-select" required>
+ <option value="">Code</option>
+ <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+ <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+ <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+ <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+ <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+ <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+ <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+ <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+</select>
+</div>
+<input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
+</div>
+</div>
 
- <button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
- Submit Registration
- </button>
+<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+Submit Registration
+</button>
+
+<div class="mt-4 text-center text-sm text-gray-600">
+ <p>If you need support, contact us via WhatsApp:</p>
+ <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+  Contact Support
+    <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
+ </a>
+</div>
 </form>
 </div>
 
@@ -131,7 +140,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabaseUrl = 'https://qxluetvkqxillhqsbubl.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwODA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwNjEwOH0.r9N1tQ7m5E1gY0u-0w7sH3f8L6t5m4n3M4j4j3j4j'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const urlParams = new URLSearchParams(window.location.search)
@@ -144,94 +153,94 @@ const formContainer = document.getElementById('formContainer')
 * Check form code and update title on load
 */
 const checkFormCode = async () => {
- if (!formCode) {
- // If 'code' is missing, set to 'default' and continue with original title
- formIdInput.value = 'default' // Keep 'default' if no code is present
- console.warn("URL parameter 'code' is missing. Using default.")
- return
- }
+if (!formCode) {
+// If 'code' is missing, set to 'default' and continue with original title
+formIdInput.value = 'default' // Keep 'default' if no code is present
+console.warn("URL parameter 'code' is missing. Using default.")
+return
+}
 
- // formIdInput.value = formCode // REMOVED: No longer saving subjectid here.
+// formIdInput.value = formCode // REMOVED: No longer saving subjectid here.
 
- // 1. Check if the code exists in the 'forms' table
- const { data, error } = await supabase
- .from('forms')
- .select('id, title') // MODIFIED: Select 'id' and 'title'
- .eq('subjectid', formCode)
- .limit(1)
- .single()
+// 1. Check if the code exists in the 'forms' table
+const { data, error } = await supabase
+.from('forms')
+.select('id, title') // MODIFIED: Select 'id' and 'title'
+.eq('subjectid', formCode)
+.limit(1)
+.single()
 
- if (error && error.code !== 'PGRST116') { // PGRST116 is 'No rows returned'
- console.error('Supabase Error checking form code:', error)
- alert('❌ An error occurred while validating the form code.')
- // Hide form and show error
- formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred. Please try again later.</p></div>'
- return
- }
+if (error && error.code !== 'PGRST116') { // PGRST116 is 'No rows returned'
+console.error('Supabase Error checking form code:', error)
+alert('❌ An error occurred while validating the form code.')
+// Hide form and show error
+formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred. Please try again later.</p></div>'
+return
+}
 
- if (data) {
- // 2. If exists, update the title AND set the hidden formid field
- formIdInput.value = data.id // NEW: Set the formid to the fetched row's ID
- document.title = data.title // Update page title
- formTitleElement.textContent = data.title // Update H2 title
- } else {
- // 3. If not exists (error.code is PGRST116 or data is null), display error message
- const errorMessage = `
-  <div class="text-center p-10">
-  <h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2>
-  <p class="text-gray-700">This form does not exist. Please check the URL and ensure the **code** parameter is correct.</p>
-  </div>
- `
- formContainer.innerHTML = errorMessage // Replace form content with error message
- }
+if (data) {
+// 2. If exists, update the title AND set the hidden formid field
+formIdInput.value = data.id // NEW: Set the formid to the fetched row's ID
+document.title = data.title // Update page title
+formTitleElement.textContent = data.title // Update H2 title
+} else {
+// 3. If not exists (error.code is PGRST116 or data is null), display error message
+const errorMessage = `
+ <div class="text-center p-10">
+ <h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2>
+ <p class="text-gray-700">This form does not exist. Please check the URL and ensure the **code** parameter is correct.</p>
+ </div>
+`
+formContainer.innerHTML = errorMessage // Replace form content with error message
+}
 }
 
 checkFormCode()
 
 // 📞 Phone number rules per country
 const phoneRules = {
- '+20': 10, // Egypt (10 digits)
- '+249': 9, // Sudan (9 digits)
- '+971': 9, // UAE (9 digits)
- '+966': 9, // Saudi Arabia (9 digits)
- '+973': 8, // Bahrain (8 digits)
- '+968': 8, // Oman (8 digits)
- '+965': 8, // Kuwait (8 digits)
- '+974': 8 // Qatar (8 digits)
+'+20': 10, // Egypt (10 digits)
+'+249': 9, // Sudan (9 digits)
+'+971': 9, // UAE (9 digits)
+'+966': 9, // Saudi Arabia (9 digits)
+'+973': 8, // Bahrain (8 digits)
+'+968': 8, // Oman (8 digits)
+'+965': 8, // Kuwait (8 digits)
+'+974': 8 // Qatar (8 digits)
 }
 
 const setupPhoneInput = (selectId, inputId, flagId) => {
- const select = document.getElementById(selectId)
- const input = document.getElementById(inputId)
- const flag = document.getElementById(flagId)
+const select = document.getElementById(selectId)
+const input = document.getElementById(inputId)
+const flag = document.getElementById(flagId)
 
- select.addEventListener('change', () => {
- const selected = select.options[select.selectedIndex]
- const countryCode = select.value
- const flagUrl = selected.getAttribute('data-flag')
- flag.src = flagUrl || ''
+select.addEventListener('change', () => {
+const selected = select.options[select.selectedIndex]
+const countryCode = select.value
+const flagUrl = selected.getAttribute('data-flag')
+flag.src = flagUrl || ''
 
- const ruleLength = phoneRules[countryCode]
+const ruleLength = phoneRules[countryCode]
 
- if (ruleLength) {
-  // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
-  input.value = '' // Clear the input completely
- 
-  // The maximum length is now just the rule length
-  const max = ruleLength
-  input.maxLength = max
- 
-  // Create a placeholder that shows the exact number of digits required
-  const placeholderX = 'X'.repeat(ruleLength)
-  input.placeholder = `${placeholderX} (${max} digits)`
-  // --- END MODIFICATION ---
- } else {
-  // If no country is selected or rule is missing
-  input.value = ''
-  input.maxLength = 15 // Default max
-  input.placeholder = "Enter phone number"
- }
- })
+if (ruleLength) {
+ // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
+ input.value = '' // Clear the input completely
+
+ // The maximum length is now just the rule length
+ const max = ruleLength
+ input.maxLength = max
+
+ // Create a placeholder that shows the exact number of digits required
+ const placeholderX = 'X'.repeat(ruleLength)
+ input.placeholder = `${placeholderX} (${max} digits)`
+ // --- END MODIFICATION ---
+} else {
+ // If no country is selected or rule is missing
+ input.value = ''
+ input.maxLength = 15 // Default max
+ input.placeholder = "Enter phone number"
+}
+})
 }
 
 setupPhoneInput('country_code', 'number', 'flag_user')
@@ -243,116 +252,124 @@ const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCa
 
 // --- MODIFIED VALIDATION (UNCHANGED) ---
 const validatePhoneNumber = (countryCode, numberInputId) => {
- const input = document.getElementById(numberInputId)
- const value = input.value.trim()
- const ruleLength = phoneRules[countryCode]
+const input = document.getElementById(numberInputId)
+const value = input.value.trim()
+const ruleLength = phoneRules[countryCode]
 
- if (!ruleLength) return true // No rule, no specific validation
+if (!ruleLength) return true // No rule, no specific validation
 
- // Check for the exact required length
- if (value.length !== ruleLength) {
- alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
- input.focus()
- return false
- }
- return true
+// Check for the exact required length
+if (value.length !== ruleLength) {
+alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
+input.focus()
+return false
+}
+return true
 }
 // --- END MODIFIED VALIDATION (UNCHANGED) ---
 
-// --- NEW HELPER: Age check ---
+// --- NEW HELPER: Age check (UNCHANGED) ---
 const isOlderThan14 = (dobString) => {
- const today = new Date()
- const dob = new Date(dobString)
- let age = today.getFullYear() - dob.getFullYear()
- const m = today.getMonth() - dob.getMonth()
- if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-  age--
- }
- return age >= 14
+const today = new Date()
+const dob = new Date(dobString)
+let age = today.getFullYear() - dob.getFullYear()
+const m = today.getMonth() - dob.getMonth()
+if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+ age--
+}
+return age >= 14
 }
 // --- END NEW HELPER ---
 
 document.getElementById('myForm').addEventListener('submit', async (e) => {
- e.preventDefault()
+e.preventDefault()
 
- // Re-check for form existence (in case the code changes or API fails, although it should be checked on load)
- if (formContainer.querySelector('#myForm') === null) {
- alert('❌ Cannot submit: Form content is not available.')
+// Re-check for form existence (in case the code changes or API fails, although it should be checked on load)
+if (formContainer.querySelector('#myForm') === null) {
+alert('❌ Cannot submit: Form content is not available.')
+return
+}
+
+let firstname = capitalize(document.getElementById('firstname').value.trim())
+let lastname = capitalize(document.getElementById('lastname').value.trim())
+let email = document.getElementById('email').value.trim().toLowerCase()
+const countryCode = document.getElementById('country_code').value
+const studentNumberOnly = document.getElementById('number').value.trim()
+const number = countryCode + studentNumberOnly
+let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
+let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
+let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
+const parentCountryCode = document.getElementById('parent_country_code').value
+const parentNumberOnly = document.getElementById('parentnumber').value.trim()
+const parentnumber = parentCountryCode + parentNumberOnly
+const dob = document.getElementById('dob').value
+const formid = document.getElementById('formid').value
+
+if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
+alert('❌ Names cannot contain spaces.')
+return
+}
+
+if (!validateEmail(email) || !validateEmail(parentemail)) {
+alert('❌ Please enter valid email addresses.')
+return
+}
+
+// Phone number length validation
+if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
  return
- }
+}
 
- let firstname = capitalize(document.getElementById('firstname').value.trim())
- let lastname = capitalize(document.getElementById('lastname').value.trim())
- let email = document.getElementById('email').value.trim().toLowerCase()
- const countryCode = document.getElementById('country_code').value
- const studentNumberOnly = document.getElementById('number').value.trim()
- const number = countryCode + studentNumberOnly
- let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
- let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
- let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
- const parentCountryCode = document.getElementById('parent_country_code').value
- const parentNumberOnly = document.getElementById('parentnumber').value.trim()
- const parentnumber = parentCountryCode + parentNumberOnly
- const dob = document.getElementById('dob').value
- const formid = document.getElementById('formid').value
+// --- VALIDATION CHECKS (UNCHANGED) ---
 
- if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
- alert('❌ Names cannot contain spaces.')
- return
- }
+// 1. Parent Email must not be the same as Student Email
+if (email === parentemail) {
+alert('❌ The Parent Email Address cannot be the same as the Student Email Address.')
+document.getElementById('parentemail').focus()
+return
+}
 
- if (!validateEmail(email) || !validateEmail(parentemail)) {
- alert('❌ Please enter valid email addresses.')
- return
- }
+// 2. Student Number must not be the same as Parent Number (full international number check)
+if (number === parentnumber) {
+alert('❌ The Parent Phone Number cannot be the same as the Student Phone Number.')
+document.getElementById('parentnumber').focus()
+return
+}
 
- // Phone number length validation
- if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
-  return
- }
- 
- // --- NEW VALIDATION CHECKS START HERE ---
+// 3. Date of Birth: user must be older than 14 years
+if (!isOlderThan14(dob)) {
+alert('❌ The student must be 14 years or older to register.')
+document.getElementById('dob').focus()
+return
+}
 
- // 1. Parent Email must not be the same as Student Email
- if (email === parentemail) {
- alert('❌ The Parent Email Address cannot be the same as the Student Email Address.')
- document.getElementById('parentemail').focus()
- return
- }
-
- // 2. Student Number must not be the same as Parent Number (full international number check)
- if (number === parentnumber) {
- alert('❌ The Parent Phone Number cannot be the same as the Student Phone Number.')
- document.getElementById('parentnumber').focus()
- return
- }
-
- // 3. Date of Birth: user must be older than 14 years
- if (!isOlderThan14(dob)) {
- alert('❌ The student must be 14 years or older to register.')
- document.getElementById('dob').focus()
- return
- }
-
- // --- NEW VALIDATION CHECKS END HERE ---
+// --- END VALIDATION CHECKS ---
 
 
- const submissionData = {
- firstname, lastname, email, number,
- parentfirstname, parentlastname, parentemail, parentnumber,
- dob, formid
- }
+const submissionData = {
+firstname, lastname, email, number,
+parentfirstname, parentlastname, parentemail, parentnumber,
+dob, formid
+}
 
- const { error } = await supabase.from('form_submissions').insert([submissionData])
- if (error) {
- console.error('Supabase Error:', error)
+const { error } = await supabase.from('form_submissions').insert([submissionData])
+if (error) {
+console.error('Supabase Error:', error)
+
+// --- MODIFIED ERROR CHECK: Display custom message for duplicate entry (Unique constraint violation) ---
+if (error.code === '23505') { // PostgreSQL unique constraint violation error code
+ alert('❌ This student has already filled the form before.')
+} else {
  alert('❌ Error submitting form: ' + error.message)
- } else {
- alert('✅ Registration submitted successfully!')
- e.target.reset()
- document.getElementById('flag_user').src = ''
- document.getElementById('flag_parent').src = ''
- }
+}
+// --- END MODIFIED ERROR CHECK ---
+
+} else {
+alert('✅ Registration submitted successfully!')
+e.target.reset()
+document.getElementById('flag_user').src = ''
+document.getElementById('flag_parent').src = ''
+}
 })
 </script>
 </body>
