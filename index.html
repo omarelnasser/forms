@@ -1,321 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>User Registration Form</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <style>
-  .form-group { margin-bottom: 1rem; }
-  .input-field {
-    width: 100%; padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db; border-radius: 0.375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-  .input-field:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-    outline: none;
-  }
-  .phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
-  .country-select-wrapper {
-    position: relative; flex-shrink: 0; display: flex; align-items: center;
-  }
-  .flag-icon {
-    position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
-  }
-  .country-code-select {
-    padding-left: 2.2rem; /* room for flag */
-    width: 110px; appearance: none;
-  }
-  .phone-number-input { flex-grow: 1; }
- </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Registration Form</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+ .form-group { margin-bottom: 1rem; }
+ .input-field {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db; border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+ }
+ .input-field:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  outline: none;
+ }
+ .phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
+ .country-select-wrapper {
+  position: relative; flex-shrink: 0; display: flex; align-items: center;
+ }
+ .flag-icon {
+  position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
+ }
+ .country-code-select {
+  padding-left: 2.2rem; /* room for flag */
+  width: 110px; appearance: none;
+ }
+ .phone-number-input { flex-grow: 1; }
+</style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
- <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
-  <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
-  <p class="text-center text-gray-500 mb-8">Please fill out all the required information below.</p>
- 
-  <form id="myForm" class="space-y-6">
-    <input type="hidden" id="formid" />
+<div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
+ <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
+ <p class="text-center text-gray-500 mb-8">Please fill out all the required information below.</p>
 
-    <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="form-group">
-      <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-      <input type="text" id="firstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-    </div>
-    <div class="form-group">
-      <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-      <input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-    </div>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="form-group">
-      <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-      <input type="email" id="email" placeholder="" required class="input-field" />
-    </div>
-    <div class="form-group">
-      <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-      <input type="date" id="dob" required class="input-field" />
-    </div>
-    </div>
+ <form id="myForm" class="space-y-6">
+  <input type="hidden" id="formid" />
 
-    <div class="form-group">
-    <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
-    <div class="phone-input-group">
-      <div class="country-select-wrapper">
-      <img id="flag_user" class="flag-icon" src="" alt="">
-      <select id="country_code" class="input-field country-code-select" required>
-        <option value="">Code</option>
-        <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
-        <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
-        <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
-        <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
-        <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
-        <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
-        <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
-        <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
-      </select>
-      </div>
-      <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
-    </div>
-    </div>
+  <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="form-group">
+   <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
+   <input type="text" id="firstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+  </div>
+  <div class="form-group">
+   <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
+   <input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+  </div>
+  </div>
+ 
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="form-group">
+   <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+   <input type="email" id="email" placeholder="" required class="input-field" />
+  </div>
+  <div class="form-group">
+   <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+   <input type="date" id="dob" required class="input-field" />
+  </div>
+  </div>
 
-    <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="form-group">
-      <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
-      <input type="text" id="parentfirstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-        </div>
-    <div class="form-group">
-      <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
-      <input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-    </div>
-    </div>
-    
-    <div class="form-group">
-    <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
-    <input type="email" id="parentemail" placeholder="" required class="input-field" />
-    </div>
+  <div class="form-group">
+  <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
+  <div class="phone-input-group">
+   <div class="country-select-wrapper">
+   <img id="flag_user" class="flag-icon" src="" alt="">
+   <select id="country_code" class="input-field country-code-select" required>
+    <option value="">Code</option>
+    <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+    <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+    <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+    <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+    <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+    <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+    <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+    <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+   </select>
+   </div>
+   <input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
+  </div>
+  </div>
 
-    <div class="form-group">
-    <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
-    <div class="phone-input-group">
-      <div class="country-select-wrapper">
-      <img id="flag_parent" class="flag-icon" src="" alt="">
-      <select id="parent_country_code" class="input-field country-code-select" required>
-        <option value="">Code</option>
-        <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
-        <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
-        <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
-        <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
-        <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
-        <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
-        <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
-        <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
-      </select>
-      </div>
-      <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
-    </div>
-    </div>
-    
-    <button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
-    Submit Registration
-    </button>
-  </form>
- </div>
+  <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="form-group">
+   <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
+   <input type="text" id="parentfirstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+    </div>
+  <div class="form-group">
+   <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
+   <input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+  </div>
+  </div>
+ 
+  <div class="form-group">
+  <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
+  <input type="email" id="parentemail" placeholder="" required class="input-field" />
+  </div>
 
- <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  <div class="form-group">
+  <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
+  <div class="phone-input-group">
+   <div class="country-select-wrapper">
+   <img id="flag_parent" class="flag-icon" src="" alt="">
+   <select id="parent_country_code" class="input-field country-code-select" required>
+    <option value="">Code</option>
+    <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+    <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+    <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+    <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+    <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+    <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+    <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+    <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+   </select>
+   </div>
+   <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
+  </div>
+  </div>
+ 
+  <button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+  Submit Registration
+  </button>
+ </form>
+</div>
 
-  const supabaseUrl = 'https://qxluetvkqxillhqsbubl.supabase.co'
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwODA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg'
-  const supabase = createClient(supabaseUrl, supabaseKey)
+<script type="module">
+ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-  const urlParams = new URLSearchParams(window.location.search)
-  const formCode = urlParams.get('code')
-  const formIdInput = document.getElementById('formid') // Renamed for clarity in the script, though ID remains 'formid'
-  const formTitleElement = document.getElementById('formTitle')
-  const formContainer = document.getElementById('formContainer')
+ const supabaseUrl = 'https://qxluetvkqxillhqsbubl.supabase.co'
+ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwODA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg'
+ const supabase = createClient(supabaseUrl, supabaseKey)
 
-  /**
-   * Check form code and update title on load
-   */
-  const checkFormCode = async () => {
-    if (!formCode) {
-      // If 'code' is missing, set to 'default' and continue with original title
-      formIdInput.value = 'default' // Keep 'default' if no code is present
-      console.warn("URL parameter 'code' is missing. Using default.")
-      return
-    }
+ const urlParams = new URLSearchParams(window.location.search)
+ const formCode = urlParams.get('code')
+ const formIdInput = document.getElementById('formid') // Renamed for clarity in the script, though ID remains 'formid'
+ const formTitleElement = document.getElementById('formTitle')
+ const formContainer = document.getElementById('formContainer')
 
-    // formIdInput.value = formCode // REMOVED: No longer saving subjectid here.
-    
-    // 1. Check if the code exists in the 'forms' table
-    const { data, error } = await supabase
-      .from('forms')
-      .select('id, title') // MODIFIED: Select 'id' and 'title'
-      .eq('subjectid', formCode)
-      .limit(1)
-      .single()
+ /**
+ * Check form code and update title on load
+ */
+ const checkFormCode = async () => {
+  if (!formCode) {
+   // If 'code' is missing, set to 'default' and continue with original title
+   formIdInput.value = 'default' // Keep 'default' if no code is present
+   console.warn("URL parameter 'code' is missing. Using default.")
+   return
+  }
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 is 'No rows returned'
-      console.error('Supabase Error checking form code:', error)
-      alert('❌ An error occurred while validating the form code.')
-      // Hide form and show error
-      formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred. Please try again later.</p></div>'
-      return
-    }
+  // formIdInput.value = formCode // REMOVED: No longer saving subjectid here.
+ 
+  // 1. Check if the code exists in the 'forms' table
+  const { data, error } = await supabase
+   .from('forms')
+   .select('id, title') // MODIFIED: Select 'id' and 'title'
+   .eq('subjectid', formCode)
+   .limit(1)
+   .single()
 
-    if (data) {
-      // 2. If exists, update the title AND set the hidden formid field
-      formIdInput.value = data.id // NEW: Set the formid to the fetched row's ID
-      document.title = data.title // Update page title
-      formTitleElement.textContent = data.title // Update H2 title
-    } else {
-      // 3. If not exists (error.code is PGRST116 or data is null), display error message
-      const errorMessage = `
-        <div class="text-center p-10">
-          <h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2>
-          <p class="text-gray-700">This form does not exist. Please check the URL and ensure the **code** parameter is correct.</p>
-        </div>
-      `
-      formContainer.innerHTML = errorMessage // Replace form content with error message
-    }
-  }
+  if (error && error.code !== 'PGRST116') { // PGRST116 is 'No rows returned'
+   console.error('Supabase Error checking form code:', error)
+   alert('❌ An error occurred while validating the form code.')
+   // Hide form and show error
+   formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred. Please try again later.</p></div>'
+   return
+  }
 
-  checkFormCode()
+  if (data) {
+   // 2. If exists, update the title AND set the hidden formid field
+   formIdInput.value = data.id // NEW: Set the formid to the fetched row's ID
+   document.title = data.title // Update page title
+   formTitleElement.textContent = data.title // Update H2 title
+  } else {
+   // 3. If not exists (error.code is PGRST116 or data is null), display error message
+   const errorMessage = `
+    <div class="text-center p-10">
+     <h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2>
+     <p class="text-gray-700">This form does not exist. Please check the URL and ensure the **code** parameter is correct.</p>
+    </div>
+   `
+   formContainer.innerHTML = errorMessage // Replace form content with error message
+  }
+ }
 
-  // 📞 Phone number rules per country
-  const phoneRules = {
-    '+20': 10, // Egypt (10 digits)
-    '+249': 9, // Sudan (9 digits)
-    '+971': 9, // UAE (9 digits)
-    '+966': 9, // Saudi Arabia (9 digits)
-    '+973': 8, // Bahrain (8 digits)
-    '+968': 8, // Oman (8 digits)
-    '+965': 8, // Kuwait (8 digits)
-    '+974': 8 // Qatar (8 digits)
-  }
+ checkFormCode()
 
-  const setupPhoneInput = (selectId, inputId, flagId) => {
-    const select = document.getElementById(selectId)
-    const input = document.getElementById(inputId)
-    const flag = document.getElementById(flagId)
+ // 📞 Phone number rules per country
+ const phoneRules = {
+  '+20': 10, // Egypt (10 digits)
+  '+249': 9, // Sudan (9 digits)
+  '+971': 9, // UAE (9 digits)
+  '+966': 9, // Saudi Arabia (9 digits)
+  '+973': 8, // Bahrain (8 digits)
+  '+968': 8, // Oman (8 digits)
+  '+965': 8, // Kuwait (8 digits)
+  '+974': 8 // Qatar (8 digits)
+ }
 
-    select.addEventListener('change', () => {
-      const selected = select.options[select.selectedIndex]
-      const countryCode = select.value
-      const flagUrl = selected.getAttribute('data-flag')
-      flag.src = flagUrl || ''
-      
-      const ruleLength = phoneRules[countryCode]
+ const setupPhoneInput = (selectId, inputId, flagId) => {
+  const select = document.getElementById(selectId)
+  const input = document.getElementById(inputId)
+  const flag = document.getElementById(flagId)
 
-      if (ruleLength) {
-        // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
-        input.value = '' // Clear the input completely
-        
-        // The maximum length is now just the rule length
-        const max = ruleLength
-        input.maxLength = max
-        
-        // Create a placeholder that shows the exact number of digits required
-        const placeholderX = 'X'.repeat(ruleLength)
-        input.placeholder = `${placeholderX} (${max} digits)`
-        // --- END MODIFICATION ---
-      } else {
-        // If no country is selected or rule is missing
-        input.value = ''
-        input.maxLength = 15 // Default max
-        input.placeholder = "Enter phone number"
-      }
-    })
-  }
+  select.addEventListener('change', () => {
+   const selected = select.options[select.selectedIndex]
+   const countryCode = select.value
+   const flagUrl = selected.getAttribute('data-flag')
+   flag.src = flagUrl || ''
+  
+   const ruleLength = phoneRules[countryCode]
 
-  setupPhoneInput('country_code', 'number', 'flag_user')
-  setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
+   if (ruleLength) {
+    // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
+    input.value = '' // Clear the input completely
+   
+    // The maximum length is now just the rule length
+    const max = ruleLength
+    input.maxLength = max
+   
+    // Create a placeholder that shows the exact number of digits required
+    const placeholderX = 'X'.repeat(ruleLength)
+    input.placeholder = `${placeholderX} (${max} digits)`
+    // --- END MODIFICATION ---
+   } else {
+    // If no country is selected or rule is missing
+    input.value = ''
+    input.maxLength = 15 // Default max
+    input.placeholder = "Enter phone number"
+   }
+  })
+ }
 
-  // 🧠 Helpers
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-  
-  // --- MODIFIED VALIDATION ---
-  const validatePhoneNumber = (countryCode, numberInputId) => {
-    const input = document.getElementById(numberInputId)
-    const value = input.value.trim()
-    const ruleLength = phoneRules[countryCode]
+ setupPhoneInput('country_code', 'number', 'flag_user')
+ setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
-    if (!ruleLength) return true // No rule, no specific validation
+ // 🧠 Helpers
+ const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+ const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
-    // Check for the exact required length
-    if (value.length !== ruleLength) {
-      alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
-      input.focus()
-      return false
-    }
-    return true
-  }
-  // --- END MODIFIED VALIDATION ---
+ // --- MODIFIED VALIDATION ---
+ const validatePhoneNumber = (countryCode, numberInputId) => {
+  const input = document.getElementById(numberInputId)
+  const value = input.value.trim()
+  const ruleLength = phoneRules[countryCode]
 
+  if (!ruleLength) return true // No rule, no specific validation
 
-  document.getElementById('myForm').addEventListener('submit', async (e) => {
-    e.preventDefault()
-
-    // Re-check for form existence (in case the code changes or API fails, although it should be checked on load)
-    if (formContainer.querySelector('#myForm') === null) {
-      alert('❌ Cannot submit: Form content is not available.')
-      return
-    }
-
-    let firstname = capitalize(document.getElementById('firstname').value.trim())
-    let lastname = capitalize(document.getElementById('lastname').value.trim())
-    let email = document.getElementById('email').value.trim().toLowerCase()
-    const countryCode = document.getElementById('country_code').value
-    const number = countryCode + document.getElementById('number').value.trim()
-    let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
-    let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
-    let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
-    const parentCountryCode = document.getElementById('parent_country_code').value
-    const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
-    const dob = document.getElementById('dob').value
-    const formid = document.getElementById('formid').value
-
-    if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
-      alert('❌ Names cannot contain spaces.')
-      return
-    }
-
-    if (!validateEmail(email) || !validateEmail(parentemail)) {
-      alert('❌ Please enter valid email addresses.')
-      return
-    }
-      
-      // --- RUN MODIFIED VALIDATION BEFORE SUBMISSION ---
-      if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
-        return
-      }
-      // --- END MODIFIED VALIDATION ---
+  // Check for the exact required length
+  if (value.length !== ruleLength) {
+   alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
+   input.focus()
+   return false
+  }
+  return true
+ }
+ // --- END MODIFIED VALIDATION ---
 
 
-    const submissionData = {
-      firstname, lastname, email, number,
-      parentfirstname, parentlastname, parentemail, parentnumber,
-      dob, formid
-    }
+ document.getElementById('myForm').addEventListener('submit', async (e) => {
+  e.preventDefault()
 
-    const { error } = await supabase.from('form_submissions').insert([submissionData])
-    if (error) {
-      console.error('Supabase Error:', error)
-      alert('❌ Error submitting form: ' + error.message)
-    } else {
-      alert('✅ Registration submitted successfully!')
-      e.target.reset()
-      document.getElementById('flag_user').src = ''
-      document.getElementById('flag_parent').src = ''
-    }
-  })
- </script>
+  // Re-check for form existence (in case the code changes or API fails, although it should be checked on load)
+  if (formContainer.querySelector('#myForm') === null) {
+   alert('❌ Cannot submit: Form content is not available.')
+   return
+  }
+
+  let firstname = capitalize(document.getElementById('firstname').value.trim())
+  let lastname = capitalize(document.getElementById('lastname').value.trim())
+  let email = document.getElementById('email').value.trim().toLowerCase()
+  const countryCode = document.getElementById('country_code').value
+  const number = countryCode + document.getElementById('number').value.trim()
+  let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
+  let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
+  let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
+  const parentCountryCode = document.getElementById('parent_country_code').value
+  const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
+  const dob = document.getElementById('dob').value
+  const formid = document.getElementById('formid').value
+
+  if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
+   alert('❌ Names cannot contain spaces.')
+   return
+  }
+
+  if (!validateEmail(email) || !validateEmail(parentemail)) {
+   alert('❌ Please enter valid email addresses.')
+   return
+  }
+  
+   // --- RUN MODIFIED VALIDATION BEFORE SUBMISSION ---
+   if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
+    return
+   }
+   // --- END MODIFIED VALIDATION ---
+
+
+  const submissionData = {
+   firstname, lastname, email, number,
+   parentfirstname, parentlastname, parentemail, parentnumber,
+   dob, formid
+  }
+
+  const { error } = await supabase.from('form_submissions').insert([submissionData])
+  if (error) {
+   console.error('Supabase Error:', error)
+   alert('❌ Error submitting form: ' + error.message)
+  } else {
+   alert('✅ Registration submitted successfully!')
+   e.target.reset()
+   document.getElementById('flag_user').src = ''
+   document.getElementById('flag_parent').src = ''
+  }
+ })
+</script>
 </body>
 </html>
