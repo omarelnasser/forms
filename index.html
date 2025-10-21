@@ -50,7 +50,7 @@
       <input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
     </div>
     </div>
-   
+    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="form-group">
       <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
@@ -94,7 +94,7 @@
       <input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
     </div>
     </div>
-   
+    
     <div class="form-group">
     <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
     <input type="email" id="parentemail" placeholder="" required class="input-field" />
@@ -120,7 +120,7 @@
       <input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
     </div>
     </div>
-   
+    
     <button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
     Submit Registration
     </button>
@@ -213,16 +213,17 @@
       const ruleLength = phoneRules[countryCode]
 
       if (ruleLength) {
-        // Set input value to '1' and adjust length
-        input.value = '1'
+        // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
+        input.value = '' // Clear the input completely
         
-        // The maximum length is the rule length (e.g., 10 for EG) + 1 for the pre-filled '1'
-        const max = ruleLength + 1
+        // The maximum length is now just the rule length
+        const max = ruleLength
         input.maxLength = max
         
-        // Create a placeholder that starts with 1
+        // Create a placeholder that shows the exact number of digits required
         const placeholderX = 'X'.repeat(ruleLength)
-        input.placeholder = `1${placeholderX} (${max} digits)`
+        input.placeholder = `${placeholderX} (${max} digits)`
+        // --- END MODIFICATION ---
       } else {
         // If no country is selected or rule is missing
         input.value = ''
@@ -239,7 +240,7 @@
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   
-  // --- NEW VALIDATION ADDED HERE ---
+  // --- MODIFIED VALIDATION ---
   const validatePhoneNumber = (countryCode, numberInputId) => {
     const input = document.getElementById(numberInputId)
     const value = input.value.trim()
@@ -247,15 +248,15 @@
 
     if (!ruleLength) return true // No rule, no specific validation
 
-    // Check for '1' at the start and the exact required length
-    if (value.length !== ruleLength + 1 || !value.startsWith('1')) {
-      alert(`❌ Phone number for ${countryCode} must start with '1' and be exactly ${ruleLength + 1} digits long.`)
+    // Check for the exact required length
+    if (value.length !== ruleLength) {
+      alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
       input.focus()
       return false
     }
     return true
   }
-  // --- END NEW VALIDATION ---
+  // --- END MODIFIED VALIDATION ---
 
 
   document.getElementById('myForm').addEventListener('submit', async (e) => {
@@ -290,11 +291,11 @@
       return
     }
       
-      // --- RUN NEW VALIDATION BEFORE SUBMISSION ---
+      // --- RUN MODIFIED VALIDATION BEFORE SUBMISSION ---
       if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
         return
       }
-      // --- END RUN NEW VALIDATION ---
+      // --- END RUN MODIFIED VALIDATION ---
 
 
     const submissionData = {
