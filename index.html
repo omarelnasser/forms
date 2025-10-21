@@ -37,7 +37,7 @@
   <p class="text-center text-gray-500 mb-8">Please fill out all the required information below.</p>
  
   <form id="myForm" class="space-y-6">
-    <input type="hidden" id="form_code" />
+    <input type="hidden" id="formid" />
 
     <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -136,7 +136,7 @@
 
   const urlParams = new URLSearchParams(window.location.search)
   const formCode = urlParams.get('code')
-  const formCodeInput = document.getElementById('form_code')
+  const formCodeInput = document.getElementById('formid')
   const formTitleElement = document.getElementById('formTitle')
   const formContainer = document.getElementById('formContainer')
 
@@ -279,7 +279,7 @@
     const parentCountryCode = document.getElementById('parent_country_code').value
     const parentnumber = parentCountryCode + document.getElementById('parentnumber').value.trim()
     const dob = document.getElementById('dob').value
-    const form_code = document.getElementById('form_code').value
+    const formid = document.getElementById('formid').value
 
     if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
       alert('❌ Names cannot contain spaces.')
@@ -301,7 +301,7 @@
     const submissionData = {
       firstname, lastname, email, number,
       parentfirstname, parentlastname, parentemail, parentnumber,
-      dob, form_code
+      dob, formid
     }
 
     const { error } = await supabase.from('form_submissions').insert([submissionData])
