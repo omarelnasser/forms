@@ -30,37 +30,43 @@ padding-left: 2.2rem; /* room for flag */
 width: 110px; appearance: none;
 }
 .phone-number-input { flex-grow: 1; }
+/* Hide additional fields initially */
+#extendedFields { display: none; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
 <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
-<p class="text-center text-gray-500 mb-8">Please fill out all the required information below.</p>
+<p id="formSubtitle" class="text-center text-gray-500 mb-8">Please enter your email to get started.</p>
 
 <form id="myForm" class="space-y-6">
 <input type="hidden" id="formid" />
 
+<div class="form-group">
+<label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+<input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
+</div>
+
+<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+Next
+</button>
+
+<div id="extendedFields">
 <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="form-group">
 <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-<input type="text" id="firstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="firstname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 <div class="form-group">
 <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-<input type="text" id="lastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="lastname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="form-group">
-<label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-<input type="email" id="email" placeholder="" required class="input-field" />
-</div>
 <div class="form-group">
 <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-<input type="date" id="dob" required class="input-field" />
-</div>
+<input type="date" id="dob" class="input-field" />
 </div>
 
 <div class="form-group">
@@ -68,7 +74,7 @@ width: 110px; appearance: none;
 <div class="phone-input-group">
 <div class="country-select-wrapper">
 <img id="flag_user" class="flag-icon" src="" alt="">
-<select id="country_code" class="input-field country-code-select" required>
+<select id="country_code" class="input-field country-code-select">
  <option value="">Code</option>
  <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
  <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
@@ -80,7 +86,7 @@ width: 110px; appearance: none;
  <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
 </select>
 </div>
-<input type="tel" id="number" placeholder="Enter phone number" required class="input-field phone-number-input" />
+<input type="tel" id="number" placeholder="Enter phone number" class="input-field phone-number-input" />
 </div>
 </div>
 
@@ -88,17 +94,17 @@ width: 110px; appearance: none;
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="form-group">
 <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
-<input type="text" id="parentfirstname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="parentfirstname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
  </div>
 <div class="form-group">
 <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
-<input type="text" id="parentlastname" placeholder="" required class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="parentlastname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 </div>
 
 <div class="form-group">
 <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
-<input type="email" id="parentemail" placeholder="" required class="input-field" />
+<input type="email" id="parentemail" placeholder="" class="input-field" />
 </div>
 
 <div class="form-group">
@@ -106,7 +112,7 @@ width: 110px; appearance: none;
 <div class="phone-input-group">
 <div class="country-select-wrapper">
 <img id="flag_parent" class="flag-icon" src="" alt="">
-<select id="parent_country_code" class="input-field country-code-select" required>
+<select id="parent_country_code" class="input-field country-code-select">
  <option value="">Code</option>
  <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
  <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
@@ -118,18 +124,19 @@ width: 110px; appearance: none;
  <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
 </select>
 </div>
-<input type="tel" id="parentnumber" placeholder="Enter phone number" required class="input-field phone-number-input" />
+<input type="tel" id="parentnumber" placeholder="Enter phone number" class="input-field phone-number-input" />
 </div>
 </div>
 
-<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
 Submit Registration
 </button>
+</div>
 
 <div class="mt-4 text-center text-sm text-gray-600">
  <p>If you need support, contact us via WhatsApp:</p>
  <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-  Contact Support
+   Contact Support
     <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
  </a>
 </div>
@@ -145,68 +152,103 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const urlParams = new URLSearchParams(window.location.search)
 const formCode = urlParams.get('code')
-const formIdInput = document.getElementById('formid') // Renamed for clarity in the script, though ID remains 'formid'
+const formIdInput = document.getElementById('formid')
 const formTitleElement = document.getElementById('formTitle')
 const formContainer = document.getElementById('formContainer')
+const nextBtn = document.getElementById('nextBtn')
+const extendedFields = document.getElementById('extendedFields')
+const emailInput = document.getElementById('email')
 
-/**
-* Check form code and update title on load
-*/
 const checkFormCode = async () => {
 if (!formCode) {
-// If 'code' is missing, set to 'default' and continue with original title
-formIdInput.value = 'default' // Keep 'default' if no code is present
-console.warn("URL parameter 'code' is missing. Using default.")
+formIdInput.value = 'default'
 return
 }
 
-// formIdInput.value = formCode // REMOVED: No longer saving subjectid here.
-
-// 1. Check if the code exists in the 'forms' table
 const { data, error } = await supabase
 .from('forms')
-.select('id, title') // MODIFIED: Select 'id' and 'title'
+.select('id, title')
 .eq('subjectid', formCode)
 .limit(1)
 .single()
 
-if (error && error.code !== 'PGRST116') { // PGRST116 is 'No rows returned'
-console.error('Supabase Error checking form code:', error)
-alert('❌ An error occurred while validating the form code.')
-// Hide form and show error
-formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred. Please try again later.</p></div>'
+if (error && error.code !== 'PGRST116') {
+console.error('Supabase Error:', error)
+formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred.</p></div>'
 return
 }
 
 if (data) {
-// 2. If exists, update the title AND set the hidden formid field
-formIdInput.value = data.id // NEW: Set the formid to the fetched row's ID
-document.title = data.title // Update page title
-formTitleElement.textContent = data.title // Update H2 title
+formIdInput.value = data.id
+document.title = data.title
+formTitleElement.textContent = data.title
 } else {
-// 3. If not exists (error.code is PGRST116 or data is null), display error message
-const errorMessage = `
- <div class="text-center p-10">
- <h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2>
- <p class="text-gray-700">This form does not exist. Please check the URL and ensure the **code** parameter is correct.</p>
- </div>
-`
-formContainer.innerHTML = errorMessage // Replace form content with error message
+formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2></div>'
 }
 }
 
 checkFormCode()
 
-// 📞 Phone number rules per country
+// Step 1: Check Email Logic
+nextBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim().toLowerCase()
+    if (!validateEmail(email)) {
+        alert('Please enter a valid email address.')
+        return
+    }
+
+    nextBtn.disabled = true
+    nextBtn.textContent = 'Checking...'
+
+    // Check if email exists in students table
+    const { data: student, error } = await supabase
+        .from('students')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+    if (student) {
+        // Registered! Add to form_submissions automatically
+        const submissionData = {
+            firstname: student.firstname,
+            lastname: student.lastname,
+            email: student.email,
+            number: student.number,
+            parentfirstname: student.parentfirstname,
+            parentlastname: student.parentlastname,
+            parentemail: student.parentemail,
+            parentnumber: student.parentnumber,
+            dob: student.dob,
+            formid: formIdInput.value
+        }
+
+        const { error: insError } = await supabase.from('form_submissions').insert([submissionData])
+        
+        if (insError && insError.code === '23505') {
+            alert('✅ You are already registered for this subject!')
+        } else if (insError) {
+            alert('Error: ' + insError.message)
+        } else {
+            formContainer.innerHTML = `
+                <div class="text-center p-10">
+                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Complete</h2>
+                    <p class="text-gray-600">Welcome back ${student.firstname}! You are already registered in our system, and your entry has been recorded.</p>
+                </div>`
+        }
+    } else {
+        // Not registered: Show full form
+        nextBtn.style.display = 'none'
+        extendedFields.style.display = 'block'
+        document.getElementById('formSubtitle').textContent = "Email not found. Please complete your registration below."
+        // Make fields required now that they are visible
+        const inputs = extendedFields.querySelectorAll('input, select')
+        inputs.forEach(input => { if(input.type !== 'hidden') input.required = true })
+    }
+})
+
 const phoneRules = {
-'+20': 10, // Egypt (10 digits)
-'+249': 9, // Sudan (9 digits)
-'+971': 9, // UAE (9 digits)
-'+966': 9, // Saudi Arabia (9 digits)
-'+973': 8, // Bahrain (8 digits)
-'+968': 8, // Oman (8 digits)
-'+965': 8, // Kuwait (8 digits)
-'+974': 8 // Qatar (8 digits)
+'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8
 }
 
 const setupPhoneInput = (selectId, inputId, flagId) => {
@@ -219,25 +261,15 @@ const selected = select.options[select.selectedIndex]
 const countryCode = select.value
 const flagUrl = selected.getAttribute('data-flag')
 flag.src = flagUrl || ''
-
 const ruleLength = phoneRules[countryCode]
 
 if (ruleLength) {
- // --- MODIFICATION: Remove pre-filled '1' and adjust length/placeholder ---
- input.value = '' // Clear the input completely
-
- // The maximum length is now just the rule length
- const max = ruleLength
- input.maxLength = max
-
- // Create a placeholder that shows the exact number of digits required
- const placeholderX = 'X'.repeat(ruleLength)
- input.placeholder = `${placeholderX} (${max} digits)`
- // --- END MODIFICATION ---
-} else {
- // If no country is selected or rule is missing
  input.value = ''
- input.maxLength = 15 // Default max
+ input.maxLength = ruleLength
+ input.placeholder = `${'X'.repeat(ruleLength)} (${ruleLength} digits)`
+} else {
+ input.value = ''
+ input.maxLength = 15
  input.placeholder = "Enter phone number"
 }
 })
@@ -246,49 +278,32 @@ if (ruleLength) {
 setupPhoneInput('country_code', 'number', 'flag_user')
 setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
-// 🧠 Helpers
 const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
-// --- MODIFIED VALIDATION (UNCHANGED) ---
 const validatePhoneNumber = (countryCode, numberInputId) => {
 const input = document.getElementById(numberInputId)
 const value = input.value.trim()
 const ruleLength = phoneRules[countryCode]
-
-if (!ruleLength) return true // No rule, no specific validation
-
-// Check for the exact required length
-if (value.length !== ruleLength) {
+if (ruleLength && value.length !== ruleLength) {
 alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
 input.focus()
 return false
 }
 return true
 }
-// --- END MODIFIED VALIDATION (UNCHANGED) ---
 
-// --- NEW HELPER: Age check (UNCHANGED) ---
 const isOlderThan14 = (dobString) => {
 const today = new Date()
 const dob = new Date(dobString)
 let age = today.getFullYear() - dob.getFullYear()
 const m = today.getMonth() - dob.getMonth()
-if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
- age--
-}
+if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) { age-- }
 return age >= 14
 }
-// --- END NEW HELPER ---
 
 document.getElementById('myForm').addEventListener('submit', async (e) => {
 e.preventDefault()
-
-// Re-check for form existence (in case the code changes or API fails, although it should be checked on load)
-if (formContainer.querySelector('#myForm') === null) {
-alert('❌ Cannot submit: Form content is not available.')
-return
-}
 
 let firstname = capitalize(document.getElementById('firstname').value.trim())
 let lastname = capitalize(document.getElementById('lastname').value.trim())
@@ -310,41 +325,22 @@ alert('❌ Names cannot contain spaces.')
 return
 }
 
-if (!validateEmail(email) || !validateEmail(parentemail)) {
-alert('❌ Please enter valid email addresses.')
-return
-}
+if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) return
 
-// Phone number length validation
-if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) {
- return
-}
-
-// --- VALIDATION CHECKS (UNCHANGED) ---
-
-// 1. Parent Email must not be the same as Student Email
 if (email === parentemail) {
-alert('❌ The Parent Email Address cannot be the same as the Student Email Address.')
-document.getElementById('parentemail').focus()
+alert('❌ Parent Email cannot be the same as Student Email.')
 return
 }
 
-// 2. Student Number must not be the same as Parent Number (full international number check)
 if (number === parentnumber) {
-alert('❌ The Parent Phone Number cannot be the same as the Student Phone Number.')
-document.getElementById('parentnumber').focus()
+alert('❌ Parent Phone cannot be the same as Student Phone.')
 return
 }
 
-// 3. Date of Birth: user must be older than 14 years
 if (!isOlderThan14(dob)) {
-alert('❌ The student must be 14 years or older to register.')
-document.getElementById('dob').focus()
+alert('❌ Student must be 14 years or older.')
 return
 }
-
-// --- END VALIDATION CHECKS ---
-
 
 const submissionData = {
 firstname, lastname, email, number,
@@ -354,21 +350,11 @@ dob, formid
 
 const { error } = await supabase.from('form_submissions').insert([submissionData])
 if (error) {
-console.error('Supabase Error:', error)
-
-// --- MODIFIED ERROR CHECK: Display custom message for duplicate entry (Unique constraint violation) ---
-if (error.code === '23505') { // PostgreSQL unique constraint violation error code
- alert('❌ This student has already filled the form before.')
-} else {
- alert('❌ Error submitting form: ' + error.message)
-}
-// --- END MODIFIED ERROR CHECK ---
-
+ if (error.code === '23505') alert('❌ This student has already filled the form before.')
+ else alert('❌ Error: ' + error.message)
 } else {
 alert('✅ Registration submitted successfully!')
-e.target.reset()
-document.getElementById('flag_user').src = ''
-document.getElementById('flag_parent').src = ''
+window.location.reload()
 }
 })
 </script>
