@@ -187,17 +187,33 @@ const checkFormCode = async () => {
     if (data) {
         formIdInput.value = data.id
         document.title = data.title
-        formTitleElement.innerHTML = `${data.title} <span class="font-bold text-black ml-2">Regestration Form</span>`;
+        formTitleElement.innerHTML = `${data.title} <span class="font-bold text-black ml-2">Registration Form</span>`;
     }
 }
 checkFormCode()
 
 nextBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim().toLowerCase()
+    const currentFormId = formIdInput.value
     if (!validateEmail(email)) return alert('❌ Please enter a valid email address.')
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
+    // 1. First Check: Is the email already in the submissions table for this specific subject?
+    const { data: existingSubmission } = await supabase
+        .from('form_submissions')
+        .select('firstname')
+        .eq('email', email)
+        .eq('formid', currentFormId)
+        .limit(1)
+        .single()
+
+    if (existingSubmission) {
+        showFinalSuccess(existingSubmission.firstname)
+        return
+    }
+
+    // 2. Second Check: Is the student in the students table?
     const { data: student } = await supabase.from('students').select('*').eq('email', email).single()
 
     if (student) {
@@ -205,7 +221,7 @@ nextBtn.addEventListener('click', async () => {
             firstname: student.firstname, lastname: student.lastname, email: student.email,
             number: student.number, parentfirstname: student.parentfirstname, 
             parentlastname: student.parentlastname, parentemail: student.parentemail,
-            parentnumber: student.parentnumber, dob: student.dob, formid: formIdInput.value
+            parentnumber: student.parentnumber, dob: student.dob, formid: currentFormId
         }])
         showFinalSuccess(student.firstname)
     } else {
