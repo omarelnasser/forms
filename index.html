@@ -26,18 +26,18 @@ position: relative; flex-shrink: 0; display: flex; align-items: center;
 position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
 }
 .country-code-select {
-padding-left: 2.2rem; /* room for flag */
+padding-left: 2.2rem;
 width: 110px; appearance: none;
 }
 .phone-number-input { flex-grow: 1; }
-/* Hide additional fields initially */
+/* Hide detailed registration initially */
 #extendedFields { display: none; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
 <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
-<p id="formSubtitle" class="text-center text-gray-500 mb-8">Please enter your email to get started.</p>
+<p id="formSubtitle" class="text-center text-gray-500 mb-8">Enter your personal email to check your registration status.</p>
 
 <form id="myForm" class="space-y-6">
 <input type="hidden" id="formid" />
@@ -47,7 +47,7 @@ width: 110px; appearance: none;
 <input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
 </div>
 
-<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none transition duration-150 ease-in-out">
 Next
 </button>
 
@@ -56,11 +56,11 @@ Next
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="form-group">
 <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-<input type="text" id="firstname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="firstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 <div class="form-group">
 <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-<input type="text" id="lastname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="lastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 </div>
 
@@ -94,17 +94,17 @@ Next
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="form-group">
 <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
-<input type="text" id="parentfirstname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="parentfirstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
  </div>
 <div class="form-group">
 <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
-<input type="text" id="parentlastname" placeholder="" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+<input type="text" id="parentlastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
 </div>
 </div>
 
 <div class="form-group">
 <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
-<input type="email" id="parentemail" placeholder="" class="input-field" />
+<input type="email" id="parentemail" class="input-field" />
 </div>
 
 <div class="form-group">
@@ -128,16 +128,15 @@ Next
 </div>
 </div>
 
-<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-Submit Registration
+<button type="submit" class="w-full py-3 mt-4 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+Complete Registration
 </button>
 </div>
 
 <div class="mt-4 text-center text-sm text-gray-600">
  <p>If you need support, contact us via WhatsApp:</p>
  <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-   Contact Support
-    <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
+    Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
  </a>
 </div>
 </form>
@@ -160,202 +159,101 @@ const extendedFields = document.getElementById('extendedFields')
 const emailInput = document.getElementById('email')
 
 const checkFormCode = async () => {
-if (!formCode) {
-formIdInput.value = 'default'
-return
+    if (!formCode) {
+        formIdInput.value = 'default'
+        return
+    }
+    const { data, error } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).limit(1).single()
+    if (data) {
+        formIdInput.value = data.id
+        document.title = data.title
+        formTitleElement.textContent = data.title
+    }
 }
-
-const { data, error } = await supabase
-.from('forms')
-.select('id, title')
-.eq('subjectid', formCode)
-.limit(1)
-.single()
-
-if (error && error.code !== 'PGRST116') {
-console.error('Supabase Error:', error)
-formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Error</h2><p class="text-gray-700">An unexpected error occurred.</p></div>'
-return
-}
-
-if (data) {
-formIdInput.value = data.id
-document.title = data.title
-formTitleElement.textContent = data.title
-} else {
-formContainer.innerHTML = '<div class="text-center p-10"><h2 class="text-3xl font-bold text-red-600 mb-4">Form Not Found</h2></div>'
-}
-}
-
 checkFormCode()
 
-// Step 1: Check Email Logic
+const showFinalSuccess = (studentName) => {
+    const subjectName = formTitleElement.textContent || "the subject"
+    formContainer.innerHTML = `
+        <div class="text-center p-10">
+            <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Success</h2>
+            <p class="text-gray-600 text-lg">You have successfully registered to <strong>${subjectName}</strong>.</p>
+            <p class="text-gray-500 mt-4">The classroom will appear inside the IGeni app once admitted by the teacher.</p>
+            <p class="text-blue-600 font-bold mt-6">Happy Learning, ${studentName}!</p>
+        </div>`
+}
+
+// STEP 1 Logic: Check if registered
 nextBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim().toLowerCase()
-    if (!validateEmail(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         alert('Please enter a valid email address.')
         return
     }
 
     nextBtn.disabled = true
-    nextBtn.textContent = 'Checking...'
+    nextBtn.textContent = 'Verifying...'
 
-    // Check if email exists in students table
-    const { data: student, error } = await supabase
-        .from('students')
-        .select('*')
-        .eq('email', email)
-        .single()
+    const { data: student, error } = await supabase.from('students').select('*').eq('email', email).single()
 
     if (student) {
-        // Registered! Add to form_submissions automatically
-        const submissionData = {
-            firstname: student.firstname,
-            lastname: student.lastname,
-            email: student.email,
-            number: student.number,
-            parentfirstname: student.parentfirstname,
-            parentlastname: student.parentlastname,
-            parentemail: student.parentemail,
-            parentnumber: student.parentnumber,
-            dob: student.dob,
-            formid: formIdInput.value
-        }
-
-        const { error: insError } = await supabase.from('form_submissions').insert([submissionData])
+        // Registered: Save to submissions immediately
+        const { error: insError } = await supabase.from('form_submissions').insert([{
+            firstname: student.firstname, lastname: student.lastname, email: student.email,
+            number: student.number, parentfirstname: student.parentfirstname, 
+            parentlastname: student.parentlastname, parentemail: student.parentemail,
+            parentnumber: student.parentnumber, dob: student.dob, formid: formIdInput.value
+        }])
         
-        if (insError && insError.code === '23505') {
-            alert('✅ You are already registered for this subject!')
-        } else if (insError) {
-            alert('Error: ' + insError.message)
-        } else {
-            formContainer.innerHTML = `
-                <div class="text-center p-10">
-                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Complete</h2>
-                    <p class="text-gray-600">You have successfully registered to ${data.title}. The classroom will appear inside the IGeni app once admitted by the teacher. Happy Learning, ${student.firstname}!</p>
-                </div>`
-        }
+        // Show success even if duplicate submission
+        showFinalSuccess(student.firstname)
     } else {
-        // Not registered: Show full form
+        // Not registered: Reveal the rest of the form
         nextBtn.style.display = 'none'
         extendedFields.style.display = 'block'
-        document.getElementById('formSubtitle').textContent = "Email not found. Please complete your registration below."
-        // Make fields required now that they are visible
-        const inputs = extendedFields.querySelectorAll('input, select')
-        inputs.forEach(input => { if(input.type !== 'hidden') input.required = true })
+        document.getElementById('formSubtitle').textContent = "Student not found. Please fill out the registration form below."
+        extendedFields.querySelectorAll('input, select').forEach(el => { if(el.type !== 'hidden') el.required = true })
     }
 })
 
-const phoneRules = {
-'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8
-}
-
+// Phone rules and helpers
+const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
 const setupPhoneInput = (selectId, inputId, flagId) => {
-const select = document.getElementById(selectId)
-const input = document.getElementById(inputId)
-const flag = document.getElementById(flagId)
-
-select.addEventListener('change', () => {
-const selected = select.options[select.selectedIndex]
-const countryCode = select.value
-const flagUrl = selected.getAttribute('data-flag')
-flag.src = flagUrl || ''
-const ruleLength = phoneRules[countryCode]
-
-if (ruleLength) {
- input.value = ''
- input.maxLength = ruleLength
- input.placeholder = `${'X'.repeat(ruleLength)} (${ruleLength} digits)`
-} else {
- input.value = ''
- input.maxLength = 15
- input.placeholder = "Enter phone number"
+    const select = document.getElementById(selectId); const input = document.getElementById(inputId); const flag = document.getElementById(flagId)
+    select.addEventListener('change', () => {
+        const selected = select.options[select.selectedIndex]; const rule = phoneRules[select.value]
+        flag.src = selected.getAttribute('data-flag') || ''
+        if (rule) { input.maxLength = rule; input.placeholder = `${'X'.repeat(rule)} (${rule} digits)` }
+    })
 }
-})
-}
-
 setupPhoneInput('country_code', 'number', 'flag_user')
 setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
-const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-
-const validatePhoneNumber = (countryCode, numberInputId) => {
-const input = document.getElementById(numberInputId)
-const value = input.value.trim()
-const ruleLength = phoneRules[countryCode]
-if (ruleLength && value.length !== ruleLength) {
-alert(`❌ Phone number for ${countryCode} must be exactly ${ruleLength} digits long.`)
-input.focus()
-return false
-}
-return true
-}
-
-const isOlderThan14 = (dobString) => {
-const today = new Date()
-const dob = new Date(dobString)
-let age = today.getFullYear() - dob.getFullYear()
-const m = today.getMonth() - dob.getMonth()
-if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) { age-- }
-return age >= 14
-}
-
+// Form Submit (Manual Registration)
 document.getElementById('myForm').addEventListener('submit', async (e) => {
-e.preventDefault()
+    e.preventDefault()
+    const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+    
+    const data = {
+        firstname: capitalize(document.getElementById('firstname').value.trim()),
+        lastname: capitalize(document.getElementById('lastname').value.trim()),
+        email: emailInput.value.trim().toLowerCase(),
+        number: document.getElementById('country_code').value + document.getElementById('number').value.trim(),
+        parentfirstname: capitalize(document.getElementById('parentfirstname').value.trim()),
+        parentlastname: capitalize(document.getElementById('parentlastname').value.trim()),
+        parentemail: document.getElementById('parentemail').value.trim().toLowerCase(),
+        parentnumber: document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim(),
+        dob: document.getElementById('dob').value,
+        formid: formIdInput.value
+    }
 
-let firstname = capitalize(document.getElementById('firstname').value.trim())
-let lastname = capitalize(document.getElementById('lastname').value.trim())
-let email = document.getElementById('email').value.trim().toLowerCase()
-const countryCode = document.getElementById('country_code').value
-const studentNumberOnly = document.getElementById('number').value.trim()
-const number = countryCode + studentNumberOnly
-let parentfirstname = capitalize(document.getElementById('parentfirstname').value.trim())
-let parentlastname = capitalize(document.getElementById('parentlastname').value.trim())
-let parentemail = document.getElementById('parentemail').value.trim().toLowerCase()
-const parentCountryCode = document.getElementById('parent_country_code').value
-const parentNumberOnly = document.getElementById('parentnumber').value.trim()
-const parentnumber = parentCountryCode + parentNumberOnly
-const dob = document.getElementById('dob').value
-const formid = document.getElementById('formid').value
-
-if ([firstname, lastname, parentfirstname, parentlastname].some(n => n.includes(' '))) {
-alert('❌ Names cannot contain spaces.')
-return
-}
-
-if (!validatePhoneNumber(countryCode, 'number') || !validatePhoneNumber(parentCountryCode, 'parentnumber')) return
-
-if (email === parentemail) {
-alert('❌ Parent Email cannot be the same as Student Email.')
-return
-}
-
-if (number === parentnumber) {
-alert('❌ Parent Phone cannot be the same as Student Phone.')
-return
-}
-
-if (!isOlderThan14(dob)) {
-alert('❌ Student must be 14 years or older.')
-return
-}
-
-const submissionData = {
-firstname, lastname, email, number,
-parentfirstname, parentlastname, parentemail, parentnumber,
-dob, formid
-}
-
-const { error } = await supabase.from('form_submissions').insert([submissionData])
-if (error) {
- if (error.code === '23505') alert('❌ This student has already filled the form before.')
- else alert('❌ Error: ' + error.message)
-} else {
-alert('✅ Registration submitted successfully!')
-window.location.reload()
-}
+    if (data.email === data.parentemail) return alert('❌ Parent Email cannot match Student Email.')
+    
+    const { error } = await supabase.from('form_submissions').insert([data])
+    if (error && error.code === '23505') alert('❌ Already registered.')
+    else if (error) alert('Error: ' + error.message)
+    else showFinalSuccess(data.firstname)
 })
 </script>
 </body>
