@@ -132,7 +132,7 @@ Submit Registration
 </button>
 </div>
 
-<div class="mt-4 text-center text-sm text-gray-600">
+<div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
  <p>If you need support, contact us via WhatsApp:</p>
  <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
     Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
@@ -156,6 +156,7 @@ const formContainer = document.getElementById('formContainer')
 const nextBtn = document.getElementById('nextBtn')
 const extendedFields = document.getElementById('extendedFields')
 const emailInput = document.getElementById('email')
+const supportHtml = document.getElementById('supportSection').outerHTML
 
 const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
 
@@ -169,8 +170,9 @@ const isOlderThan14 = (dob) => {
     return age >= 14
 }
 
+// Function for when they JUST registered now
 const showFinalSuccess = (name) => {
-    const title = formTitleElement.textContent || "the subject"
+    const title = formTitleElement.innerText.replace(" Registration Form", "") || "the subject"
     formContainer.innerHTML = `
         <div class="text-center p-10">
             <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
@@ -178,6 +180,22 @@ const showFinalSuccess = (name) => {
             <p class="text-gray-600 text-lg">You have successfully registered to <strong>${title}</strong>.</p>
             <p class="text-gray-500 mt-4">The classroom will appear inside the IGeni app once admitted by the teacher.</p>
             <p class="text-blue-600 font-bold mt-6">Happy Learning, ${name}!</p>
+            ${supportHtml}
+        </div>`
+}
+
+// Function for when they were ALREADY registered previously
+const showAlreadyRegistered = () => {
+    const title = formTitleElement.innerText.replace(" Registration Form", "") || "the subject"
+    formContainer.innerHTML = `
+        <div class="text-center p-10">
+            <i class="fas fa-info-circle text-blue-500 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Already Registered</h2>
+            <p class="text-gray-600 text-lg">You have already registered to <strong>${title}</strong>.</p>
+            <p class="text-gray-500 mt-4">Once admitted, you will see the classroom in the IGeni App homepage.</p>
+            <div class="mt-8">
+                ${supportHtml}
+            </div>
         </div>`
 }
 
@@ -199,7 +217,7 @@ nextBtn.addEventListener('click', async () => {
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
-    // 1. First Check: Is the email already in the submissions table for this specific subject?
+    // 1. Check if already in submissions
     const { data: existingSubmission } = await supabase
         .from('form_submissions')
         .select('firstname')
@@ -209,11 +227,11 @@ nextBtn.addEventListener('click', async () => {
         .single()
 
     if (existingSubmission) {
-        showFinalSuccess(existingSubmission.firstname)
+        showAlreadyRegistered()
         return
     }
 
-    // 2. Second Check: Is the student in the students table?
+    // 2. Check if in students table to auto-register
     const { data: student } = await supabase.from('students').select('*').eq('email', email).single()
 
     if (student) {
@@ -259,7 +277,6 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const sFullNum = sCode + sNum
     const pFullNum = pCode + pNum
 
-    // Validations
     if ([fn, ln, pfn, pln].some(name => name.includes(' '))) return alert('❌ Names cannot contain spaces.')
     if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
     if (sFullNum === pFullNum) return alert('❌ Student and Parent phone numbers must be different.')
@@ -274,7 +291,7 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
     }])
 
-    if (error && error.code === '23505') alert('❌ This student is already registered.')
+    if (error && error.code === '23505') showAlreadyRegistered()
     else if (error) alert('Error: ' + error.message)
     else showFinalSuccess(capitalize(fn))
 })
