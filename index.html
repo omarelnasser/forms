@@ -30,7 +30,6 @@ padding-left: 2.2rem;
 width: 110px; appearance: none;
 }
 .phone-number-input { flex-grow: 1; }
-/* Hide detailed registration initially */
 #extendedFields { display: none; }
 </style>
 </head>
@@ -47,7 +46,7 @@ width: 110px; appearance: none;
 <input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
 </div>
 
-<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none transition duration-150 ease-in-out">
+<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-150">
 Next
 </button>
 
@@ -128,8 +127,8 @@ Next
 </div>
 </div>
 
-<button type="submit" class="w-full py-3 mt-4 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
-Complete Registration
+<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+Submit Registration
 </button>
 </div>
 
@@ -158,12 +157,33 @@ const nextBtn = document.getElementById('nextBtn')
 const extendedFields = document.getElementById('extendedFields')
 const emailInput = document.getElementById('email')
 
+const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
+
+const validateEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+const isOlderThan14 = (dob) => {
+    const today = new Date(); const birthDate = new Date(dob)
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--
+    return age >= 14
+}
+
+const showFinalSuccess = (name) => {
+    const title = formTitleElement.textContent || "the subject"
+    formContainer.innerHTML = `
+        <div class="text-center p-10">
+            <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Success</h2>
+            <p class="text-gray-600 text-lg">You have successfully registered to <strong>${title}</strong>.</p>
+            <p class="text-gray-500 mt-4">The classroom will appear inside the IGeni app once admitted by the teacher.</p>
+            <p class="text-blue-600 font-bold mt-6">Happy Learning, ${name}!</p>
+        </div>`
+}
+
 const checkFormCode = async () => {
-    if (!formCode) {
-        formIdInput.value = 'default'
-        return
-    }
-    const { data, error } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).limit(1).single()
+    if (!formCode) { formIdInput.value = 'default'; return }
+    const { data } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).limit(1).single()
     if (data) {
         formIdInput.value = data.id
         document.title = data.title
@@ -172,53 +192,29 @@ const checkFormCode = async () => {
 }
 checkFormCode()
 
-const showFinalSuccess = (studentName) => {
-    const subjectName = formTitleElement.textContent || "the subject"
-    formContainer.innerHTML = `
-        <div class="text-center p-10">
-            <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Success</h2>
-            <p class="text-gray-600 text-lg">You have successfully registered to <strong>${subjectName}</strong>.</p>
-            <p class="text-gray-500 mt-4">The classroom will appear inside the IGeni app once admitted by the teacher.</p>
-            <p class="text-blue-600 font-bold mt-6">Happy Learning, ${studentName}!</p>
-        </div>`
-}
-
-// STEP 1 Logic: Check if registered
 nextBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim().toLowerCase()
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Please enter a valid email address.')
-        return
-    }
+    if (!validateEmail(email)) return alert('❌ Please enter a valid email address.')
+    
+    nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
-    nextBtn.disabled = true
-    nextBtn.textContent = 'Verifying...'
-
-    const { data: student, error } = await supabase.from('students').select('*').eq('email', email).single()
+    const { data: student } = await supabase.from('students').select('*').eq('email', email).single()
 
     if (student) {
-        // Registered: Save to submissions immediately
-        const { error: insError } = await supabase.from('form_submissions').insert([{
+        await supabase.from('form_submissions').insert([{
             firstname: student.firstname, lastname: student.lastname, email: student.email,
             number: student.number, parentfirstname: student.parentfirstname, 
             parentlastname: student.parentlastname, parentemail: student.parentemail,
             parentnumber: student.parentnumber, dob: student.dob, formid: formIdInput.value
         }])
-        
-        // Show success even if duplicate submission
         showFinalSuccess(student.firstname)
     } else {
-        // Not registered: Reveal the rest of the form
-        nextBtn.style.display = 'none'
-        extendedFields.style.display = 'block'
-        document.getElementById('formSubtitle').textContent = "Student not found. Please fill out the registration form below."
+        nextBtn.style.display = 'none'; extendedFields.style.display = 'block'
+        document.getElementById('formSubtitle').textContent = "Complete your registration details."
         extendedFields.querySelectorAll('input, select').forEach(el => { if(el.type !== 'hidden') el.required = true })
     }
 })
 
-// Phone rules and helpers
-const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
 const setupPhoneInput = (selectId, inputId, flagId) => {
     const select = document.getElementById(selectId); const input = document.getElementById(inputId); const flag = document.getElementById(flagId)
     select.addEventListener('change', () => {
@@ -230,30 +226,41 @@ const setupPhoneInput = (selectId, inputId, flagId) => {
 setupPhoneInput('country_code', 'number', 'flag_user')
 setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
-// Form Submit (Manual Registration)
 document.getElementById('myForm').addEventListener('submit', async (e) => {
     e.preventDefault()
-    const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
     
-    const data = {
-        firstname: capitalize(document.getElementById('firstname').value.trim()),
-        lastname: capitalize(document.getElementById('lastname').value.trim()),
-        email: emailInput.value.trim().toLowerCase(),
-        number: document.getElementById('country_code').value + document.getElementById('number').value.trim(),
-        parentfirstname: capitalize(document.getElementById('parentfirstname').value.trim()),
-        parentlastname: capitalize(document.getElementById('parentlastname').value.trim()),
-        parentemail: document.getElementById('parentemail').value.trim().toLowerCase(),
-        parentnumber: document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim(),
-        dob: document.getElementById('dob').value,
-        formid: formIdInput.value
+    const fn = document.getElementById('firstname').value.trim()
+    const ln = document.getElementById('lastname').value.trim()
+    const pfn = document.getElementById('parentfirstname').value.trim()
+    const pln = document.getElementById('parentlastname').value.trim()
+    const studentEmail = emailInput.value.trim().toLowerCase()
+    const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
+    const dob = document.getElementById('dob').value
+    const sCode = document.getElementById('country_code').value
+    const sNum = document.getElementById('number').value.trim()
+    const pCode = document.getElementById('parent_country_code').value
+    const pNum = document.getElementById('parentnumber').value.trim()
+    const sFullNum = sCode + sNum
+    const pFullNum = pCode + pNum
+
+    // Validations
+    if ([fn, ln, pfn, pln].some(name => name.includes(' '))) return alert('❌ Names cannot contain spaces.')
+    if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
+    if (sFullNum === pFullNum) return alert('❌ Student and Parent phone numbers must be different.')
+    if (!isOlderThan14(dob)) return alert('❌ Student must be at least 14 years old.')
+    if (sNum.length !== phoneRules[sCode] || pNum.length !== phoneRules[pCode]) {
+        return alert(`❌ Verify phone number lengths (${phoneRules[sCode]} digits for student, ${phoneRules[pCode]} for parent).`)
     }
 
-    if (data.email === data.parentemail) return alert('❌ Parent Email cannot match Student Email.')
-    
-    const { error } = await supabase.from('form_submissions').insert([data])
-    if (error && error.code === '23505') alert('❌ Already registered.')
+    const { error } = await supabase.from('form_submissions').insert([{
+        firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
+        number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
+        parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
+    }])
+
+    if (error && error.code === '23505') alert('❌ This student is already registered.')
     else if (error) alert('Error: ' + error.message)
-    else showFinalSuccess(data.firstname)
+    else showFinalSuccess(capitalize(fn))
 })
 </script>
 </body>
