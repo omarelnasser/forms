@@ -187,7 +187,7 @@ const checkFormCode = async () => {
     if (data) {
         formIdInput.value = data.id
         document.title = data.title
-        formTitleElement.innerHTML = `${data.title} <span class="text-sm font-normal text-blue-500 ml-2">Regestration Form</span>`;
+        formTitleElement.innerHTML = `${data.title} <span class="font-bold text-gray-500 ml-2">(Official Form)</span>`;
     }
 }
 checkFormCode()
