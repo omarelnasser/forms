@@ -237,7 +237,7 @@ nextBtn.addEventListener('click', async () => {
     if (student) {
         await supabase.from('form_submissions').insert([{
             firstname: student.firstname, lastname: student.lastname, email: student.email,
-            number: student.number, parentfirstname: student.parentfirstname, 
+            number: student.phonenumber, parentfirstname: student.parentfirstname, 
             parentlastname: student.parentlastname, parentemail: student.parentemail,
             parentnumber: student.parentnumber, dob: student.dob, formid: currentFormId
         }])
@@ -285,11 +285,27 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         return alert(`❌ Verify phone number lengths (${phoneRules[sCode]} digits for student, ${phoneRules[pCode]} for parent).`)
     }
 
-    const { error } = await supabase.from('form_submissions').insert([{
+    // 1. Save to form_submissions
+    const submissionPromise = supabase.from('form_submissions').insert([{
         firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
         number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
         parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
     }])
+
+    // 2. Save to students table
+    const studentPromise = supabase.from('students').insert([{
+        email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
+        phonenumber: sFullNum, dob, parentemail: parentEmail
+    }])
+
+    // 3. Save to parents table
+    const parentPromise = supabase.from('parents').insert([{
+        parentemail: parentEmail, parentfirstname: capitalize(pfn), 
+        parentlastname: capitalize(pln), parentnumber: pFullNum
+    }])
+
+    const results = await Promise.all([submissionPromise, studentPromise, parentPromise])
+    const error = results[0].error // Check primary error from submissions
 
     if (error && error.code === '23505') showAlreadyRegistered()
     else if (error) alert('Error: ' + error.message)
