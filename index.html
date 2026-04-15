@@ -156,6 +156,12 @@ Submit Registration
     <button type="button" id="verifyBtn" class="w-full py-3 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
         Verify & Complete
     </button>
+    <div class="text-center">
+        <button type="button" id="resendBtn" class="text-blue-600 hover:underline text-sm font-medium">
+            Resend Code
+        </button>
+        <p id="timerDisplay" class="text-gray-400 text-xs mt-1"></p>
+    </div>
 </div>
 
 <div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
@@ -183,7 +189,10 @@ const extendedFields = document.getElementById('extendedFields')
 const emailInput = document.getElementById('email')
 const supportHtml = document.getElementById('supportSection').outerHTML
 const verificationSection = document.getElementById('verificationSection')
+const resendBtn = document.getElementById('resendBtn')
+const timerDisplay = document.getElementById('timerDisplay')
 
+let resendTimer = 0;
 const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
 
 const validateEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
@@ -194,6 +203,31 @@ const isOlderThan14 = (dob) => {
     const m = today.getMonth() - birthDate.getMonth()
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--
     return age >= 14
+}
+
+const startTimer = () => {
+    resendTimer = 60;
+    resendBtn.disabled = true;
+    resendBtn.classList.add('text-gray-400', 'cursor-not-allowed');
+    const interval = setInterval(() => {
+        if (resendTimer <= 0) {
+            clearInterval(interval);
+            resendBtn.disabled = false;
+            resendBtn.classList.remove('text-gray-400', 'cursor-not-allowed');
+            timerDisplay.textContent = "";
+        } else {
+            timerDisplay.textContent = `You can resend in ${resendTimer}s`;
+            resendTimer--;
+        }
+    }, 1000);
+}
+
+const goToVerification = (email) => {
+    document.getElementById('myForm').style.display = 'none';
+    verificationSection.style.display = 'block';
+    document.getElementById('displayEmail').textContent = email;
+    document.getElementById('formSubtitle').textContent = "Verify your account to complete registration.";
+    startTimer();
 }
 
 const showFinalSuccess = (name) => {
@@ -240,6 +274,15 @@ nextBtn.addEventListener('click', async () => {
     if (!validateEmail(email)) return alert('❌ Please enter a valid email address.')
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
+
+    const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
+    const existingAuthUser = users?.find(u => u.email === email);
+
+    if (existingAuthUser && !existingAuthUser.email_confirmed_at) {
+        await supabase.auth.resend({ type: 'signup', email: email });
+        goToVerification(email);
+        return;
+    }
 
     const { data: existingSubmission } = await supabase
         .from('form_submissions')
@@ -314,8 +357,7 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const submitBtn = document.getElementById('submitBtn')
     submitBtn.disabled = true; submitBtn.textContent = "Processing..."
 
-    // 1. Supabase Auth Signup
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { error: authError } = await supabase.auth.signUp({
         email: studentEmail,
         password: pass,
         options: { data: { first_name: fn, last_name: ln } }
@@ -326,52 +368,67 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         return alert('Auth Error: ' + authError.message)
     }
 
-    // 2. Data stays in form variables. We hide form and show verification
-    document.getElementById('myForm').style.display = 'none'
-    verificationSection.style.display = 'block'
-    document.getElementById('displayEmail').textContent = studentEmail
-    document.getElementById('formSubtitle').textContent = "Verify your account to complete registration."
-
-    // Verification Logic
-    document.getElementById('verifyBtn').onclick = async () => {
-        const token = document.getElementById('otpCode').value.trim()
-        const verifyBtn = document.getElementById('verifyBtn')
-        if (token.length < 6) return alert('Please enter the 6-digit code.')
-        
-        verifyBtn.disabled = true; verifyBtn.textContent = "Verifying..."
-
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-            email: studentEmail,
-            token: token,
-            type: 'signup'
-        })
-
-        if (verifyError) {
-            verifyBtn.disabled = false; verifyBtn.textContent = "Verify & Complete"
-            return alert('Verification Failed: ' + verifyError.message)
-        }
-
-        // 3. Finalize Database entries after successful verification
-        const submissionPromise = supabase.from('form_submissions').insert([{
-            firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
-            number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
-            parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
-        }])
-
-        const studentPromise = supabase.from('students').insert([{
-            email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
-            phonenumber: sFullNum, dob, parentemail: parentEmail
-        }])
-
-        const parentPromise = supabase.from('parents').insert([{
-            parentemail: parentEmail, parentfirstname: capitalize(pfn), 
-            parentlastname: capitalize(pln), parentnumber: pFullNum
-        }])
-
-        await Promise.all([submissionPromise, studentPromise, parentPromise])
-        showFinalSuccess(capitalize(fn))
-    }
+    goToVerification(studentEmail);
 })
+
+resendBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim().toLowerCase();
+    const { error } = await supabase.auth.resend({ type: 'signup', email: email });
+    if (error) alert("Error resending: " + error.message);
+    else { alert("Verification code resent!"); startTimer(); }
+});
+
+document.getElementById('verifyBtn').onclick = async () => {
+    const fn = document.getElementById('firstname').value.trim()
+    const ln = document.getElementById('lastname').value.trim()
+    const pfn = document.getElementById('parentfirstname').value.trim()
+    const pln = document.getElementById('parentlastname').value.trim()
+    const studentEmail = emailInput.value.trim().toLowerCase()
+    const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
+    const dob = document.getElementById('dob').value
+    const sCode = document.getElementById('country_code').value
+    const sNum = document.getElementById('number').value.trim()
+    const pCode = document.getElementById('parent_country_code').value
+    const pNum = document.getElementById('parentnumber').value.trim()
+    const sFullNum = sCode + sNum
+    const pFullNum = pCode + pNum
+    
+    const token = document.getElementById('otpCode').value.trim()
+    const verifyBtn = document.getElementById('verifyBtn')
+    if (token.length < 6) return alert('Please enter the 6-digit code.')
+    
+    verifyBtn.disabled = true; verifyBtn.textContent = "Verifying..."
+
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+        email: studentEmail,
+        token: token,
+        type: 'signup'
+    })
+
+    if (verifyError) {
+        verifyBtn.disabled = false; verifyBtn.textContent = "Verify & Complete"
+        return alert('Verification Failed: ' + verifyError.message)
+    }
+
+    const submissionPromise = supabase.from('form_submissions').insert([{
+        firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
+        number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
+        parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
+    }])
+
+    const studentPromise = supabase.from('students').insert([{
+        email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
+        phonenumber: sFullNum, dob, parentemail: parentEmail
+    }])
+
+    const parentPromise = supabase.from('parents').insert([{
+        parentemail: parentEmail, parentfirstname: capitalize(pfn), 
+        parentlastname: capitalize(pln), parentnumber: pFullNum
+    }])
+
+    await Promise.all([submissionPromise, studentPromise, parentPromise])
+    showFinalSuccess(capitalize(fn))
+}
 </script>
 </body>
 </html>
