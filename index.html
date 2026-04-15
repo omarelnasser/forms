@@ -30,7 +30,7 @@ padding-left: 2.2rem;
 width: 110px; appearance: none;
 }
 .phone-number-input { flex-grow: 1; }
-#extendedFields { display: none; }
+#extendedFields, #verificationSection { display: none; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
@@ -60,6 +60,17 @@ Next
 <div class="form-group">
 <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
 <input type="text" id="lastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="form-group">
+<label for="password" class="block text-sm font-medium text-gray-700">Create Password</label>
+<input type="password" id="password" class="input-field" minlength="6" />
+</div>
+<div class="form-group">
+<label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+<input type="password" id="confirmPassword" class="input-field" minlength="6" />
 </div>
 </div>
 
@@ -127,9 +138,24 @@ Next
 </div>
 </div>
 
-<button type="submit" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+<button type="submit" id="submitBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
 Submit Registration
 </button>
+</div>
+</form>
+
+<div id="verificationSection" class="space-y-6">
+    <div class="text-center">
+        <i class="fas fa-envelope-open-text text-blue-500 text-5xl mb-4"></i>
+        <h3 class="text-2xl font-bold text-gray-800">Verify Your Email</h3>
+        <p class="text-gray-600 mt-2">We sent a 6-digit code to <span id="displayEmail" class="font-bold"></span></p>
+    </div>
+    <div class="form-group">
+        <input type="text" id="otpCode" placeholder="Enter 6-digit code" class="input-field text-center text-2xl tracking-widest" maxlength="6" />
+    </div>
+    <button type="button" id="verifyBtn" class="w-full py-3 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+        Verify & Complete
+    </button>
 </div>
 
 <div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
@@ -138,7 +164,6 @@ Submit Registration
     Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
  </a>
 </div>
-</form>
 </div>
 
 <script type="module">
@@ -157,6 +182,7 @@ const nextBtn = document.getElementById('nextBtn')
 const extendedFields = document.getElementById('extendedFields')
 const emailInput = document.getElementById('email')
 const supportHtml = document.getElementById('supportSection').outerHTML
+const verificationSection = document.getElementById('verificationSection')
 
 const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
 
@@ -170,7 +196,6 @@ const isOlderThan14 = (dob) => {
     return age >= 14
 }
 
-// Function for when they JUST registered now
 const showFinalSuccess = (name) => {
     const title = formTitleElement.innerText.replace(" Registration Form", "") || "the subject"
     formContainer.innerHTML = `
@@ -184,7 +209,6 @@ const showFinalSuccess = (name) => {
         </div>`
 }
 
-// Function for when they were ALREADY registered previously
 const showAlreadyRegistered = () => {
     const title = formTitleElement.innerText.replace(" Registration Form", "") || "the subject"
     formContainer.innerHTML = `
@@ -217,7 +241,6 @@ nextBtn.addEventListener('click', async () => {
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
-    // 1. Check if already in submissions
     const { data: existingSubmission } = await supabase
         .from('form_submissions')
         .select('firstname')
@@ -231,7 +254,6 @@ nextBtn.addEventListener('click', async () => {
         return
     }
 
-    // 2. Check if in students table to auto-register
     const { data: student } = await supabase.from('students').select('*').eq('email', email).single()
 
     if (student) {
@@ -265,6 +287,8 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     
     const fn = document.getElementById('firstname').value.trim()
     const ln = document.getElementById('lastname').value.trim()
+    const pass = document.getElementById('password').value
+    const confirmPass = document.getElementById('confirmPassword').value
     const pfn = document.getElementById('parentfirstname').value.trim()
     const pln = document.getElementById('parentlastname').value.trim()
     const studentEmail = emailInput.value.trim().toLowerCase()
@@ -278,6 +302,8 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const pFullNum = pCode + pNum
 
     if ([fn, ln, pfn, pln].some(name => name.includes(' '))) return alert('❌ Names cannot contain spaces.')
+    if (pass !== confirmPass) return alert('❌ Passwords do not match.')
+    if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
     if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
     if (sFullNum === pFullNum) return alert('❌ Student and Parent phone numbers must be different.')
     if (!isOlderThan14(dob)) return alert('❌ Student must be at least 14 years old.')
@@ -285,31 +311,66 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         return alert(`❌ Verify phone number lengths (${phoneRules[sCode]} digits for student, ${phoneRules[pCode]} for parent).`)
     }
 
-    // 1. Save to form_submissions
-    const submissionPromise = supabase.from('form_submissions').insert([{
-        firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
-        number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
-        parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
-    }])
+    const submitBtn = document.getElementById('submitBtn')
+    submitBtn.disabled = true; submitBtn.textContent = "Processing..."
 
-    // 2. Save to students table
-    const studentPromise = supabase.from('students').insert([{
-        email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
-        phonenumber: sFullNum, dob, parentemail: parentEmail
-    }])
+    // 1. Supabase Auth Signup
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: studentEmail,
+        password: pass,
+        options: { data: { first_name: fn, last_name: ln } }
+    })
 
-    // 3. Save to parents table
-    const parentPromise = supabase.from('parents').insert([{
-        parentemail: parentEmail, parentfirstname: capitalize(pfn), 
-        parentlastname: capitalize(pln), parentnumber: pFullNum
-    }])
+    if (authError) {
+        submitBtn.disabled = false; submitBtn.textContent = "Submit Registration"
+        return alert('Auth Error: ' + authError.message)
+    }
 
-    const results = await Promise.all([submissionPromise, studentPromise, parentPromise])
-    const error = results[0].error // Check primary error from submissions
+    // 2. Data stays in form variables. We hide form and show verification
+    document.getElementById('myForm').style.display = 'none'
+    verificationSection.style.display = 'block'
+    document.getElementById('displayEmail').textContent = studentEmail
+    document.getElementById('formSubtitle').textContent = "Verify your account to complete registration."
 
-    if (error && error.code === '23505') showAlreadyRegistered()
-    else if (error) alert('Error: ' + error.message)
-    else showFinalSuccess(capitalize(fn))
+    // Verification Logic
+    document.getElementById('verifyBtn').onclick = async () => {
+        const token = document.getElementById('otpCode').value.trim()
+        const verifyBtn = document.getElementById('verifyBtn')
+        if (token.length < 6) return alert('Please enter the 6-digit code.')
+        
+        verifyBtn.disabled = true; verifyBtn.textContent = "Verifying..."
+
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+            email: studentEmail,
+            token: token,
+            type: 'signup'
+        })
+
+        if (verifyError) {
+            verifyBtn.disabled = false; verifyBtn.textContent = "Verify & Complete"
+            return alert('Verification Failed: ' + verifyError.message)
+        }
+
+        // 3. Finalize Database entries after successful verification
+        const submissionPromise = supabase.from('form_submissions').insert([{
+            firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
+            number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
+            parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
+        }])
+
+        const studentPromise = supabase.from('students').insert([{
+            email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
+            phonenumber: sFullNum, dob, parentemail: parentEmail
+        }])
+
+        const parentPromise = supabase.from('parents').insert([{
+            parentemail: parentEmail, parentfirstname: capitalize(pfn), 
+            parentlastname: capitalize(pln), parentnumber: pFullNum
+        }])
+
+        await Promise.all([submissionPromise, studentPromise, parentPromise])
+        showFinalSuccess(capitalize(fn))
+    }
 })
 </script>
 </body>
