@@ -1,176 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>User Registration Form</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<style>
-.form-group { margin-bottom: 1rem; }
-.input-field {
-width: 100%; padding: 0.75rem 1rem;
-border: 1px solid #d1d5db; border-radius: 0.375rem;
-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-.input-field:focus {
-border-color: #3b82f6;
-box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-outline: none;
-}
-.phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
-.country-select-wrapper {
-position: relative; flex-shrink: 0; display: flex; align-items: center;
-}
-.flag-icon {
-position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
-}
-.country-code-select {
-padding-left: 2.2rem;
-width: 110px; appearance: none;
-}
-.phone-number-input { flex-grow: 1; }
-#extendedFields, #verificationSection { display: none; }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        .form-group { margin-bottom: 1rem; }
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db; border-radius: 0.375rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+            outline: none;
+        }
+        .phone-input-group { display: flex; gap: 0.5rem; align-items: center; }
+        .country-select-wrapper {
+            position: relative; flex-shrink: 0; display: flex; align-items: center;
+        }
+        .flag-icon {
+            position: absolute; left: 10px; width: 20px; height: 14px; object-fit: cover;
+        }
+        .country-code-select {
+            padding-left: 2.2rem;
+            width: 110px; appearance: none;
+        }
+        .phone-number-input { flex-grow: 1; }
+        #extendedFields, #verificationSection { display: none; }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-<div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
-<h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
-<p id="formSubtitle" class="text-center text-gray-500 mb-8">Enter your personal email to check your registration status.</p>
+    <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
+        <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
+        <p id="formSubtitle" class="text-center text-gray-500 mb-8">Enter your personal email to check your registration status.</p>
 
-<form id="myForm" class="space-y-6">
-<input type="hidden" id="formid" />
+        <form id="myForm" class="space-y-6">
+            <input type="hidden" id="formid" />
 
-<div class="form-group">
-<label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-<input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
-</div>
+            <div class="form-group">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
+            </div>
 
-<button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-150">
-Next
-</button>
+            <button type="button" id="nextBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-150">
+                Next
+            </button>
 
-<div id="extendedFields">
-<h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="form-group">
-<label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-<input type="text" id="firstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-</div>
-<div class="form-group">
-<label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-<input type="text" id="lastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-</div>
-</div>
+            <div id="extendedFields">
+                <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" id="firstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" id="lastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+                    </div>
+                </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="form-group">
-<label for="password" class="block text-sm font-medium text-gray-700">Create Password</label>
-<input type="password" id="password" class="input-field" minlength="6" />
-</div>
-<div class="form-group">
-<label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-<input type="password" id="confirmPassword" class="input-field" minlength="6" />
-</div>
-</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Create Password</label>
+                        <input type="password" id="password" class="input-field" minlength="6" />
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="input-field" minlength="6" />
+                    </div>
+                </div>
 
-<div class="form-group">
-<label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-<input type="date" id="dob" class="input-field" />
-</div>
+                <div class="form-group">
+                    <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                    <input type="date" id="dob" class="input-field" />
+                </div>
 
-<div class="form-group">
-<label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
-<div class="phone-input-group">
-<div class="country-select-wrapper">
-<img id="flag_user" class="flag-icon" src="" alt="">
-<select id="country_code" class="input-field country-code-select">
- <option value="">Code</option>
- <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
- <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
- <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
- <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
- <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
- <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
- <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
- <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
-</select>
-</div>
-<input type="tel" id="number" placeholder="Enter phone number" class="input-field phone-number-input" />
-</div>
-</div>
+                <div class="form-group">
+                    <label for="country_code" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <div class="phone-input-group">
+                        <div class="country-select-wrapper">
+                            <img id="flag_user" class="flag-icon" src="" alt="">
+                            <select id="country_code" class="input-field country-code-select">
+                                <option value="">Code</option>
+                                <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+                                <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+                                <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+                                <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+                                <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+                                <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+                                <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+                                <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+                            </select>
+                        </div>
+                        <input type="tel" id="number" placeholder="Enter phone number" class="input-field phone-number-input" />
+                    </div>
+                </div>
 
-<h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="form-group">
-<label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
-<input type="text" id="parentfirstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
- </div>
-<div class="form-group">
-<label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
-<input type="text" id="parentlastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
-</div>
-</div>
+                <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4 mt-8">Parent/Guardian Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="parentfirstname" class="block text-sm font-medium text-gray-700">Parent First Name</label>
+                        <input type="text" id="parentfirstname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+                    </div>
+                    <div class="form-group">
+                        <label for="parentlastname" class="block text-sm font-medium text-gray-700">Parent Last Name</label>
+                        <input type="text" id="parentlastname" class="input-field" pattern="^[^\s]+$" title="No spaces allowed" />
+                    </div>
+                </div>
 
-<div class="form-group">
-<label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
-<input type="email" id="parentemail" class="input-field" />
-</div>
+                <div class="form-group">
+                    <label for="parentemail" class="block text-sm font-medium text-gray-700">Parent Email Address</label>
+                    <input type="email" id="parentemail" class="input-field" />
+                </div>
 
-<div class="form-group">
-<label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
-<div class="phone-input-group">
-<div class="country-select-wrapper">
-<img id="flag_parent" class="flag-icon" src="" alt="">
-<select id="parent_country_code" class="input-field country-code-select">
- <option value="">Code</option>
- <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
- <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
- <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
- <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
- <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
- <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
- <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
- <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
-</select>
-</div>
-<input type="tel" id="parentnumber" placeholder="Enter phone number" class="input-field phone-number-input" />
-</div>
-</div>
+                <div class="form-group">
+                    <label for="parent_country_code" class="block text-sm font-medium text-gray-700">Parent Phone Number</label>
+                    <div class="phone-input-group">
+                        <div class="country-select-wrapper">
+                            <img id="flag_parent" class="flag-icon" src="" alt="">
+                            <select id="parent_country_code" class="input-field country-code-select">
+                                <option value="">Code</option>
+                                <option data-flag="https://flagcdn.com/w20/eg.png" value="+20">+20 (Egypt)</option>
+                                <option data-flag="https://flagcdn.com/w20/sd.png" value="+249">+249 (Sudan)</option>
+                                <option data-flag="https://flagcdn.com/w20/sa.png" value="+966">+966 (Saudi Arabia)</option>
+                                <option data-flag="https://flagcdn.com/w20/ae.png" value="+971">+971 (UAE)</option>
+                                <option data-flag="https://flagcdn.com/w20/bh.png" value="+973">+973 (Bahrain)</option>
+                                <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
+                                <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
+                                <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+                            </select>
+                        </div>
+                        <input type="tel" id="parentnumber" placeholder="Enter phone number" class="input-field phone-number-input" />
+                    </div>
+                </div>
 
-<button type="submit" id="submitBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-Submit Registration
-</button>
-</div>
-</form>
+                <button type="submit" id="submitBtn" class="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                    Submit Registration
+                </button>
+            </div>
+        </form>
 
-<div id="verificationSection" class="space-y-6">
-    <div class="text-center">
-        <i class="fas fa-envelope-open-text text-blue-500 text-5xl mb-4"></i>
-        <h3 class="text-2xl font-bold text-gray-800">Verify Your Email</h3>
-        <p class="text-gray-600 mt-2">We sent a 6-digit code to <span id="displayEmail" class="font-bold"></span></p>
+        <div id="verificationSection" class="space-y-6">
+            <div class="text-center">
+                <i class="fas fa-envelope-open-text text-blue-500 text-5xl mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-800">Verify Your Email</h3>
+                <p class="text-gray-600 mt-2">We sent a 6-digit code to <span id="displayEmail" class="font-bold"></span></p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="otpCode" placeholder="Enter 6-digit code" class="input-field text-center text-2xl tracking-widest" maxlength="6" />
+            </div>
+            <button type="button" id="verifyBtn" class="w-full py-3 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+                Verify & Complete
+            </button>
+            <div class="text-center">
+                <button type="button" id="resendBtn" class="text-blue-600 hover:underline text-sm font-medium">
+                    Resend Code
+                </button>
+                <p id="timerDisplay" class="text-gray-400 text-xs mt-1"></p>
+            </div>
+        </div>
+
+        <div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
+            <p>If you need support, contact us via WhatsApp:</p>
+            <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
+            </a>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="text" id="otpCode" placeholder="Enter 6-digit code" class="input-field text-center text-2xl tracking-widest" maxlength="6" />
-    </div>
-    <button type="button" id="verifyBtn" class="w-full py-3 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
-        Verify & Complete
-    </button>
-    <div class="text-center">
-        <button type="button" id="resendBtn" class="text-blue-600 hover:underline text-sm font-medium">
-            Resend Code
-        </button>
-        <p id="timerDisplay" class="text-gray-400 text-xs mt-1"></p>
-    </div>
-</div>
-
-<div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
- <p>If you need support, contact us via WhatsApp:</p>
- <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-    Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
- </a>
-</div>
-</div>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -180,7 +180,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const urlParams = new URLSearchParams(window.location.search)
-const formCode = urlParams.get('code')
+const formCode = urlParams.get('code') // This is the subjectid
 const formIdInput = document.getElementById('formid')
 const formTitleElement = document.getElementById('formTitle')
 const formContainer = document.getElementById('formContainer')
@@ -197,6 +197,7 @@ const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968
 
 const validateEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+
 const isOlderThan14 = (dob) => {
     const today = new Date(); const birthDate = new Date(dob)
     let age = today.getFullYear() - birthDate.getFullYear()
@@ -259,7 +260,7 @@ const showAlreadyRegistered = () => {
 
 const checkFormCode = async () => {
     if (!formCode) { formIdInput.value = 'default'; return }
-    const { data } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).limit(1).single()
+    const { data } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).maybeSingle()
     if (data) {
         formIdInput.value = data.id
         document.title = data.title
@@ -270,45 +271,37 @@ checkFormCode()
 
 nextBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim().toLowerCase()
-    const currentFormId = formIdInput.value
     if (!validateEmail(email)) return alert('❌ Please enter a valid email address.')
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
-    const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
-    const existingAuthUser = users?.find(u => u.email === email);
+    // 1. Check if student already enrolled in THIS subject
+    const { data: enrollment } = await supabase.from('studentsubjects')
+        .select('studentemail')
+        .eq('studentemail', email)
+        .eq('subjectid', formCode)
+        .maybeSingle()
 
-    if (existingAuthUser && !existingAuthUser.email_confirmed_at) {
-        await supabase.auth.resend({ type: 'signup', email: email });
-        goToVerification(email);
+    if (enrollment) {
+        showAlreadyRegistered();
         return;
     }
 
-    const { data: existingSubmission } = await supabase
-        .from('form_submissions')
-        .select('firstname')
-        .eq('email', email)
-        .eq('formid', currentFormId)
-        .limit(1)
-        .single()
-
-    if (existingSubmission) {
-        showAlreadyRegistered()
-        return
-    }
-
-    const { data: student } = await supabase.from('students').select('*').eq('email', email).single()
+    // 2. Check if student exists in general students table
+    const { data: student } = await supabase.from('students').select('firstname').eq('email', email).maybeSingle()
 
     if (student) {
-        await supabase.from('form_submissions').insert([{
-            firstname: student.firstname, lastname: student.lastname, email: student.email,
-            number: student.phonenumber, parentfirstname: student.parentfirstname, 
-            parentlastname: student.parentlastname, parentemail: student.parentemail,
-            parentnumber: student.parentnumber, dob: student.dob, formid: currentFormId
+        // Student exists: Just link to subject
+        await supabase.from('studentsubjects').insert([{
+            studentemail: email,
+            subjectid: formCode,
+            is_admitted: false
         }])
         showFinalSuccess(student.firstname)
     } else {
-        nextBtn.style.display = 'none'; extendedFields.style.display = 'block'
+        // New Student: Show fields
+        nextBtn.style.display = 'none'; 
+        extendedFields.style.display = 'block'
         document.getElementById('formSubtitle').textContent = "Complete your registration details."
         extendedFields.querySelectorAll('input, select').forEach(el => { if(el.type !== 'hidden') el.required = true })
     }
@@ -328,12 +321,8 @@ setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 document.getElementById('myForm').addEventListener('submit', async (e) => {
     e.preventDefault()
     
-    const fn = document.getElementById('firstname').value.trim()
-    const ln = document.getElementById('lastname').value.trim()
     const pass = document.getElementById('password').value
     const confirmPass = document.getElementById('confirmPassword').value
-    const pfn = document.getElementById('parentfirstname').value.trim()
-    const pln = document.getElementById('parentlastname').value.trim()
     const studentEmail = emailInput.value.trim().toLowerCase()
     const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
     const dob = document.getElementById('dob').value
@@ -341,26 +330,18 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const sNum = document.getElementById('number').value.trim()
     const pCode = document.getElementById('parent_country_code').value
     const pNum = document.getElementById('parentnumber').value.trim()
-    const sFullNum = sCode + sNum
-    const pFullNum = pCode + pNum
 
-    if ([fn, ln, pfn, pln].some(name => name.includes(' '))) return alert('❌ Names cannot contain spaces.')
     if (pass !== confirmPass) return alert('❌ Passwords do not match.')
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
     if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
-    if (sFullNum === pFullNum) return alert('❌ Student and Parent phone numbers must be different.')
     if (!isOlderThan14(dob)) return alert('❌ Student must be at least 14 years old.')
-    if (sNum.length !== phoneRules[sCode] || pNum.length !== phoneRules[pCode]) {
-        return alert(`❌ Verify phone number lengths (${phoneRules[sCode]} digits for student, ${phoneRules[pCode]} for parent).`)
-    }
 
     const submitBtn = document.getElementById('submitBtn')
     submitBtn.disabled = true; submitBtn.textContent = "Processing..."
 
     const { error: authError } = await supabase.auth.signUp({
         email: studentEmail,
-        password: pass,
-        options: { data: { first_name: fn, last_name: ln } }
+        password: pass
     })
 
     if (authError) {
@@ -379,27 +360,22 @@ resendBtn.addEventListener('click', async () => {
 });
 
 document.getElementById('verifyBtn').onclick = async () => {
-    const fn = document.getElementById('firstname').value.trim()
-    const ln = document.getElementById('lastname').value.trim()
-    const pfn = document.getElementById('parentfirstname').value.trim()
-    const pln = document.getElementById('parentlastname').value.trim()
+    const fn = capitalize(document.getElementById('firstname').value.trim())
+    const ln = capitalize(document.getElementById('lastname').value.trim())
+    const pfn = capitalize(document.getElementById('parentfirstname').value.trim())
+    const pln = capitalize(document.getElementById('parentlastname').value.trim())
     const studentEmail = emailInput.value.trim().toLowerCase()
     const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
     const dob = document.getElementById('dob').value
-    const sCode = document.getElementById('country_code').value
-    const sNum = document.getElementById('number').value.trim()
-    const pCode = document.getElementById('parent_country_code').value
-    const pNum = document.getElementById('parentnumber').value.trim()
-    const sFullNum = sCode + sNum
-    const pFullNum = pCode + pNum
-    
+    const sFullNum = document.getElementById('country_code').value + document.getElementById('number').value.trim()
+    const pFullNum = document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim()
     const token = document.getElementById('otpCode').value.trim()
     const verifyBtn = document.getElementById('verifyBtn')
+
     if (token.length < 6) return alert('Please enter the 6-digit code.')
-    
     verifyBtn.disabled = true; verifyBtn.textContent = "Verifying..."
 
-    const { error: verifyError } = await supabase.auth.verifyOtp({
+    const { data: authData, error: verifyError } = await supabase.auth.verifyOtp({
         email: studentEmail,
         token: token,
         type: 'signup'
@@ -410,24 +386,47 @@ document.getElementById('verifyBtn').onclick = async () => {
         return alert('Verification Failed: ' + verifyError.message)
     }
 
-    const submissionPromise = supabase.from('form_submissions').insert([{
-        firstname: capitalize(fn), lastname: capitalize(ln), email: studentEmail,
-        number: sFullNum, parentfirstname: capitalize(pfn), parentlastname: capitalize(pln),
-        parentemail: parentEmail, parentnumber: pFullNum, dob, formid: formIdInput.value
-    }])
+    try {
+        // 1. Parent Logic (Check existence like Flutter)
+        let parentId;
+        const { data: existingParent } = await supabase.from('parents').select('id').eq('parentemail', parentEmail).maybeSingle();
 
-    const studentPromise = supabase.from('students').insert([{
-        email: studentEmail, firstname: capitalize(fn), lastname: capitalize(ln),
-        phonenumber: sFullNum, dob, parentemail: parentEmail
-    }])
+        if (existingParent) {
+            parentId = existingParent.id;
+        } else {
+            const { data: newParent, error: pErr } = await supabase.from('parents').insert([{
+                parentfirstname: pfn, parentlastname: pln, parentemail: parentEmail, parentnumber: pFullNum
+            }]).select().single();
+            if (pErr) throw pErr;
+            parentId = newParent.id;
+        }
 
-    const parentPromise = supabase.from('parents').insert([{
-        parentemail: parentEmail, parentfirstname: capitalize(pfn), 
-        parentlastname: capitalize(pln), parentnumber: pFullNum
-    }])
+        // 2. Insert Student
+        const { error: sErr } = await supabase.from('students').insert([{
+            auth_id: authData.user.id,
+            email: studentEmail,
+            firstname: fn,
+            lastname: ln,
+            phonenumber: sFullNum,
+            dob: dob,
+            parent_id: parentId,
+            is_confirmed: true
+        }]);
+        if (sErr) throw sErr;
 
-    await Promise.all([submissionPromise, studentPromise, parentPromise])
-    showFinalSuccess(capitalize(fn))
+        // 3. Add to StudentSubjects
+        const { error: subErr } = await supabase.from('studentsubjects').insert([{
+            studentemail: studentEmail,
+            subjectid: formCode,
+            is_admitted: false
+        }]);
+        if (subErr) throw subErr;
+
+        showFinalSuccess(fn)
+    } catch (err) {
+        alert("Setup error: " + err.message);
+        verifyBtn.disabled = false;
+    }
 }
 </script>
 </body>
