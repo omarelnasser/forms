@@ -180,7 +180,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const urlParams = new URLSearchParams(window.location.search)
-const formCode = urlParams.get('code') // This is the subjectid
+const formCode = urlParams.get('code')
 const formIdInput = document.getElementById('formid')
 const formTitleElement = document.getElementById('formTitle')
 const formContainer = document.getElementById('formContainer')
@@ -287,13 +287,14 @@ nextBtn.addEventListener('click', async () => {
         return;
     }
 
-    // 2. Check if student exists in general students table
-    const { data: student } = await supabase.from('students').select('firstname').eq('email', email).maybeSingle()
+    // 2. Check if student exists
+    const { data: student } = await supabase.from('students').select('id, firstname').eq('email', email).maybeSingle()
 
     if (student) {
-        // Student exists: Just link to subject
+        // Student exists: Just link to subject using their id
         await supabase.from('studentsubjects').insert([{
             studentemail: email,
+            student_id: student.id,
             subjectid: formCode,
             is_admitted: false
         }])
@@ -326,10 +327,6 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const studentEmail = emailInput.value.trim().toLowerCase()
     const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
     const dob = document.getElementById('dob').value
-    const sCode = document.getElementById('country_code').value
-    const sNum = document.getElementById('number').value.trim()
-    const pCode = document.getElementById('parent_country_code').value
-    const pNum = document.getElementById('parentnumber').value.trim()
 
     if (pass !== confirmPass) return alert('❌ Passwords do not match.')
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
@@ -387,7 +384,7 @@ document.getElementById('verifyBtn').onclick = async () => {
     }
 
     try {
-        // 1. Parent Logic (Check existence like Flutter)
+        // 1. Parent Logic
         let parentId;
         const { data: existingParent } = await supabase.from('parents').select('id').eq('parentemail', parentEmail).maybeSingle();
 
@@ -401,8 +398,8 @@ document.getElementById('verifyBtn').onclick = async () => {
             parentId = newParent.id;
         }
 
-        // 2. Insert Student
-        const { error: sErr } = await supabase.from('students').insert([{
+        // 2. Insert Student and capture the returned id
+        const { data: newStudent, error: sErr } = await supabase.from('students').insert([{
             auth_id: authData.user.id,
             email: studentEmail,
             firstname: fn,
@@ -411,12 +408,13 @@ document.getElementById('verifyBtn').onclick = async () => {
             dob: dob,
             parent_id: parentId,
             is_confirmed: true
-        }]);
+        }]).select().single();
         if (sErr) throw sErr;
 
-        // 3. Add to StudentSubjects
+        // 3. Add to StudentSubjects using the student_id
         const { error: subErr } = await supabase.from('studentsubjects').insert([{
             studentemail: studentEmail,
+            student_id: newStudent.id,
             subjectid: formCode,
             is_admitted: false
         }]);
