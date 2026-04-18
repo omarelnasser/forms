@@ -258,6 +258,15 @@ const showAlreadyRegistered = () => {
         </div>`
 }
 
+const showFormFields = () => {
+    nextBtn.style.display = 'none'; 
+    extendedFields.style.display = 'block';
+    document.getElementById('formSubtitle').textContent = "Complete your registration details.";
+    extendedFields.querySelectorAll('input, select').forEach(el => { 
+        if(el.type !== 'hidden') el.required = true; 
+    });
+}
+
 const checkFormCode = async () => {
     if (!formCode) { formIdInput.value = 'default'; return }
     const { data } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).maybeSingle()
@@ -275,36 +284,45 @@ nextBtn.addEventListener('click', async () => {
     
     nextBtn.disabled = true; nextBtn.textContent = 'Checking...'
 
-    // 1. Check if student already enrolled in THIS subject
-    const { data: enrollment } = await supabase.from('studentsubjects')
-        .select('studentemail')
-        .eq('studentemail', email)
-        .eq('subjectid', formCode)
+    const { data: student } = await supabase.from('students')
+        .select('id, firstname, is_confirmed')
+        .eq('email', email)
         .maybeSingle()
 
-    if (enrollment) {
-        showAlreadyRegistered();
-        return;
-    }
-
-    // 2. Check if student exists
-    const { data: student } = await supabase.from('students').select('id, firstname').eq('email', email).maybeSingle()
-
     if (student) {
-        // Student exists: Just link to subject using their id
-        await supabase.from('studentsubjects').insert([{
-            studentemail: email,
-            student_id: student.id,
-            subjectid: formCode,
-            is_admitted: false
-        }])
-        showFinalSuccess(student.firstname)
+        // CASE: Student exists but registration not confirmed (abandoned session)
+        if (student.is_confirmed === false) {
+            const { error: resendErr } = await supabase.auth.resend({ type: 'signup', email: email });
+            if (resendErr) {
+                showFormFields(); // Fallback if Auth user doesn't exist
+            } else {
+                alert("A new verification code has been sent to your email.");
+                goToVerification(email);
+            }
+            return;
+        }
+
+        // CASE: Fully registered - check subject enrollment
+        const { data: enrollment } = await supabase.from('studentsubjects')
+            .select('studentemail')
+            .eq('studentemail', email)
+            .eq('subjectid', formCode)
+            .maybeSingle()
+
+        if (enrollment) {
+            showAlreadyRegistered();
+        } else {
+            await supabase.from('studentsubjects').insert([{
+                studentemail: email,
+                student_id: student.id,
+                subjectid: formCode,
+                is_admitted: false
+            }])
+            showFinalSuccess(student.firstname)
+        }
     } else {
-        // New Student: Show fields
-        nextBtn.style.display = 'none'; 
-        extendedFields.style.display = 'block'
-        document.getElementById('formSubtitle').textContent = "Complete your registration details."
-        extendedFields.querySelectorAll('input, select').forEach(el => { if(el.type !== 'hidden') el.required = true })
+        // CASE: Completely new user
+        showFormFields();
     }
 })
 
@@ -327,6 +345,13 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const studentEmail = emailInput.value.trim().toLowerCase()
     const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
     const dob = document.getElementById('dob').value
+    
+    const fn = capitalize(document.getElementById('firstname').value.trim())
+    const ln = capitalize(document.getElementById('lastname').value.trim())
+    const pfn = capitalize(document.getElementById('parentfirstname').value.trim())
+    const pln = capitalize(document.getElementById('parentlastname').value.trim())
+    const sFullNum = document.getElementById('country_code').value + document.getElementById('number').value.trim()
+    const pFullNum = document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim()
 
     if (pass !== confirmPass) return alert('❌ Passwords do not match.')
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
@@ -336,17 +361,48 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const submitBtn = document.getElementById('submitBtn')
     submitBtn.disabled = true; submitBtn.textContent = "Processing..."
 
-    const { error: authError } = await supabase.auth.signUp({
-        email: studentEmail,
-        password: pass
-    })
+    try {
+        let parentId;
+        const { data: existingParent } = await supabase.from('parents').select('id').eq('parentemail', parentEmail).maybeSingle();
+        if (existingParent) {
+            parentId = existingParent.id;
+        } else {
+            const { data: newParent, error: pErr } = await supabase.from('parents').insert([{
+                parentfirstname: pfn, parentlastname: pln, parentemail: parentEmail, parentnumber: pFullNum
+            }]).select().single();
+            if (pErr) throw pErr;
+            parentId = newParent.id;
+        }
 
-    if (authError) {
+        const { data: newStudent, error: sErr } = await supabase.from('students').insert([{
+            email: studentEmail,
+            firstname: fn,
+            lastname: ln,
+            phonenumber: sFullNum,
+            dob: dob,
+            parent_id: parentId,
+            is_confirmed: false 
+        }]).select().single();
+        if (sErr) throw sErr;
+
+        await supabase.from('studentsubjects').insert([{
+            studentemail: studentEmail,
+            student_id: newStudent.id,
+            subjectid: formCode,
+            is_admitted: false
+        }]);
+
+        const { error: authError } = await supabase.auth.signUp({
+            email: studentEmail,
+            password: pass
+        })
+        if (authError) throw authError;
+
+        goToVerification(studentEmail);
+    } catch (err) {
+        alert("Submission error: " + err.message);
         submitBtn.disabled = false; submitBtn.textContent = "Submit Registration"
-        return alert('Auth Error: ' + authError.message)
     }
-
-    goToVerification(studentEmail);
 })
 
 resendBtn.addEventListener('click', async () => {
@@ -357,17 +413,10 @@ resendBtn.addEventListener('click', async () => {
 });
 
 document.getElementById('verifyBtn').onclick = async () => {
-    const fn = capitalize(document.getElementById('firstname').value.trim())
-    const ln = capitalize(document.getElementById('lastname').value.trim())
-    const pfn = capitalize(document.getElementById('parentfirstname').value.trim())
-    const pln = capitalize(document.getElementById('parentlastname').value.trim())
     const studentEmail = emailInput.value.trim().toLowerCase()
-    const parentEmail = document.getElementById('parentemail').value.trim().toLowerCase()
-    const dob = document.getElementById('dob').value
-    const sFullNum = document.getElementById('country_code').value + document.getElementById('number').value.trim()
-    const pFullNum = document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim()
     const token = document.getElementById('otpCode').value.trim()
     const verifyBtn = document.getElementById('verifyBtn')
+    const fn = capitalize(document.getElementById('firstname').value.trim())
 
     if (token.length < 6) return alert('Please enter the 6-digit code.')
     verifyBtn.disabled = true; verifyBtn.textContent = "Verifying..."
@@ -384,45 +433,15 @@ document.getElementById('verifyBtn').onclick = async () => {
     }
 
     try {
-        // 1. Parent Logic
-        let parentId;
-        const { data: existingParent } = await supabase.from('parents').select('id').eq('parentemail', parentEmail).maybeSingle();
-
-        if (existingParent) {
-            parentId = existingParent.id;
-        } else {
-            const { data: newParent, error: pErr } = await supabase.from('parents').insert([{
-                parentfirstname: pfn, parentlastname: pln, parentemail: parentEmail, parentnumber: pFullNum
-            }]).select().single();
-            if (pErr) throw pErr;
-            parentId = newParent.id;
-        }
-
-        // 2. Insert Student and capture the returned id
-        const { data: newStudent, error: sErr } = await supabase.from('students').insert([{
-            auth_id: authData.user.id,
-            email: studentEmail,
-            firstname: fn,
-            lastname: ln,
-            phonenumber: sFullNum,
-            dob: dob,
-            parent_id: parentId,
-            is_confirmed: true
-        }]).select().single();
-        if (sErr) throw sErr;
-
-        // 3. Add to StudentSubjects using the student_id
-        const { error: subErr } = await supabase.from('studentsubjects').insert([{
-            studentemail: studentEmail,
-            student_id: newStudent.id,
-            subjectid: formCode,
-            is_admitted: false
-        }]);
-        if (subErr) throw subErr;
-
+        const { error: updateErr } = await supabase
+            .from('students')
+            .update({ auth_id: authData.user.id, is_confirmed: true })
+            .eq('email', studentEmail);
+            
+        if (updateErr) throw updateErr;
         showFinalSuccess(fn)
     } catch (err) {
-        alert("Setup error: " + err.message);
+        alert("Verification update error: " + err.message);
         verifyBtn.disabled = false;
     }
 }
