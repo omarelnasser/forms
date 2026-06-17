@@ -206,6 +206,12 @@ const isOlderThan14 = (dob) => {
     return age >= 14
 }
 
+const generateRandomNumericPassword = () => {
+    const min = 100000;
+    const max = 999999;
+    return Math.floor(min + Math.random() * (max - min)).toString();
+}
+
 const startTimer = () => {
     resendTimer = 60;
     resendBtn.disabled = true;
@@ -399,8 +405,14 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         if (existingParent) {
             parentId = existingParent.id;
         } else {
+            const parentGeneratedPassword = generateRandomNumericPassword();
             const { data: newParent, error: pErr } = await supabase.from('parents').insert([{
-                parentfirstname: pfn, parentlastname: pln, parentemail: parentEmail, parentnumber: pFullNum
+                parentfirstname: pfn, 
+                parentlastname: pln, 
+                parentemail: parentEmail, 
+                parentnumber: pFullNum,
+                password: parentGeneratedPassword,
+                wp_sent: false
             }]).select().single();
             if (pErr) throw pErr;
             parentId = newParent.id;
@@ -413,6 +425,7 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
             phonenumber: sFullNum,
             dob: dob,
             parent_id: parentId,
+            parentemail: parentEmail,
             is_confirmed: false 
         }]).select().single();
         if (sErr) throw sErr;
