@@ -258,6 +258,19 @@ const showAlreadyRegistered = () => {
         </div>`
 }
 
+const showCourseExpired = () => {
+    const title = formTitleElement.innerText.replace(" Registration Form", "") || "this subject"
+    formContainer.innerHTML = `
+        <div class="text-center p-10">
+            <i class="fas fa-exclamation-triangle text-orange-500 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Course Expired</h2>
+            <p class="text-gray-600 text-lg">Registration for <strong>${title}</strong> has closed because this course has ended.</p>
+            <div class="mt-8">
+                ${supportHtml}
+            </div>
+        </div>`
+}
+
 const showFormFields = () => {
     nextBtn.style.display = 'none'; 
     extendedFields.style.display = 'block';
@@ -274,6 +287,25 @@ const checkFormCode = async () => {
         formIdInput.value = data.id
         document.title = data.title
         formTitleElement.innerHTML = `${data.title} <span class="font-bold text-black ml-2">Registration Form</span>`;
+        
+        // Fetch matching row details from subjects table to check termination constraints
+        const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate').eq('id', formCode).maybeSingle()
+        if (subjectData) {
+            const isEnded = subjectData.ended ?? false;
+            let isExpired = false;
+            if (subjectData.lastdate) {
+                try {
+                    const lastDate = new Date(subjectData.lastdate);
+                    if (lastDate < new Date()) {
+                        isExpired = true;
+                    }
+                } catch (_) {}
+            }
+            if (isEnded || isExpired) {
+                showCourseExpired();
+                return;
+            }
+        }
     }
 }
 checkFormCode()
