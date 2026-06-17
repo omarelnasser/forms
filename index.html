@@ -406,6 +406,20 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
             parentId = existingParent.id;
         } else {
             const parentGeneratedPassword = generateRandomNumericPassword();
+            
+            // Create parent account inside Supabase Auth linking BOTH phone and email metadata fields
+            const { error: pAuthErr } = await supabase.auth.signUp({
+                phone: pFullNum,
+                password: parentGeneratedPassword,
+                options: {
+                    data: {
+                        email: parentEmail
+                    }
+                }
+            });
+            if (pAuthErr) throw pAuthErr;
+
+            // Commit generated data details directly into public tables under 'password'
             const { data: newParent, error: pErr } = await supabase.from('parents').insert([{
                 parentfirstname: pfn, 
                 parentlastname: pln, 
