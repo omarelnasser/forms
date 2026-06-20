@@ -15,7 +15,6 @@
         }
         body {
             font-family: 'Feathers', sans-serif;
-            padding-bottom: 120px; /* Space to prevent app store bar from overlapping content */
         }
         .form-group { margin-bottom: 1rem; }
         .input-field {
@@ -42,24 +41,8 @@
         .phone-number-input { flex-grow: 1; }
         #extendedFields, #verificationSection { display: none; }
         
-        /* Store Badges Sticky Bottom Bar Styles */
-        .store-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-            padding: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            align-items: center;
-            z-index: 50;
-            border-top: 1px solid #e5e7eb;
-        }
         .store-badge {
-            height: 45px;
+            height: 48px;
             object-fit: contain;
             transition: transform 0.2s;
         }
@@ -69,9 +52,9 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8">
+    <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 my-8">
         <div class="flex justify-center mb-6">
-            <img src="icon.png" alt="App Icon" class="h-20 w-20 object-contain rounded-xl shadow-sm" />
+            <img src="icon.png" alt="App Icon" class="h-28 w-28 object-contain rounded-xl" />
         </div>
 
         <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
@@ -203,21 +186,21 @@
             </div>
         </div>
 
-        <div id="supportSection" class="mt-4 text-center text-sm text-gray-600">
+        <div id="supportSection" class="mt-4 text-center text-sm text-gray-600 border-b pb-6 mb-6">
             <p>If you need support, contact us via WhatsApp:</p>
-            <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+            <a href="https://wa.me/201093022198" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-1">
                 Contact Support <i class="fab fa-whatsapp text-green-500 text-xl ml-2"></i>
             </a>
         </div>
-    </div>
 
-    <div class="store-footer">
-        <a href="https://apps.apple.com/eg/app/igeni/id6752439689" target="_blank">
-            <img src="appstore.png" alt="Download on the App Store" class="store-badge" />
-        </a>
-        <a href="https://play.google.com/store/apps/details?id=app.android.igeni&pcampaignid=web_share" target="_blank">
-            <img src="playstore.png" alt="Get it on Google Play" class="store-badge" />
-        </a>
+        <div class="flex justify-center items-center gap-4 pt-2">
+            <a href="https://apps.apple.com/eg/app/igeni/id6752439689" target="_blank" class="inline-block">
+                <img src="appstore.png" alt="Download on the App Store" class="store-badge" />
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=app.android.igeni&pcampaignid=web_share" target="_blank" class="inline-block">
+                <img src="playstore.png" alt="Get it on Google Play" class="store-badge" />
+            </a>
+        </div>
     </div>
 
 <script type="module">
