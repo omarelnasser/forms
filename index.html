@@ -41,8 +41,12 @@
         .phone-number-input { flex-grow: 1; }
         #extendedFields, #verificationSection { display: none; }
         
+        /* Updated constraints to match sizes perfectly */
         .store-badge {
-            height: 48px;
+            height: 40px !important;
+            max-height: 40px !important;
+            width: auto;
+            display: inline-block;
             object-fit: contain;
             transition: transform 0.2s;
         }
@@ -53,6 +57,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 my-8">
+        <!-- Bigger Centered App Icon -->
         <div class="flex justify-center mb-6">
             <img src="icon.png" alt="App Icon" class="h-28 w-28 object-contain rounded-xl" />
         </div>
@@ -193,11 +198,12 @@
             </a>
         </div>
 
+        <!-- Integrated App Store Badges with Balanced Alignment -->
         <div class="flex justify-center items-center gap-4 pt-2">
-            <a href="https://apps.apple.com/eg/app/igeni/id6752439689" target="_blank" class="inline-block">
+            <a href="https://apps.apple.com/eg/app/igeni/id6752439689" target="_blank" class="flex items-center justify-center">
                 <img src="appstore.png" alt="Download on the App Store" class="store-badge" />
             </a>
-            <a href="https://play.google.com/store/apps/details?id=app.android.igeni&pcampaignid=web_share" target="_blank" class="inline-block">
+            <a href="https://play.google.com/store/apps/details?id=app.android.igeni&pcampaignid=web_share" target="_blank" class="flex items-center justify-center">
                 <img src="playstore.png" alt="Get it on Google Play" class="store-badge" />
             </a>
         </div>
