@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Registration Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         @font-face {
             font-family: 'Feathers';
@@ -50,13 +50,32 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 my-8">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 text-slate-800">
+    <div id="formContainer" class="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 my-8 border border-slate-100">
         <div class="flex justify-center mb-6">
-            <img src="icon.png" alt="App Icon" class="h-28 w-28 object-contain rounded-xl" />
+            <img src="icon.png" alt="App Icon" class="h-20 w-20 object-contain rounded-xl" />
         </div>
 
-        <h2 id="formTitle" class="text-3xl font-bold text-center text-gray-800 mb-6">User Registration</h2>
+        <!-- Dynamic Profile/Session View Header -->
+        <div id="dynamicHeaderSection" class="mb-8 hidden">
+            <div id="courseCardHeader" class="p-6 pt-8 rounded-2xl border flex flex-col items-center text-center shadow-xs relative overflow-hidden">
+                <span id="headerBadge" class="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full text-white tracking-wider uppercase">
+                    Live
+                </span>
+                
+                <div id="headerProfilePicContainer"></div>
+
+                <h4 id="headerTeacherLabel" class="text-xl font-bold text-slate-900 tracking-tight line-clamp-1 mb-1"></h4>
+                
+                <div class="flex flex-col gap-0.5 text-xs text-slate-400 font-medium">
+                    <span class="capitalize"><strong class="text-slate-500 font-medium">Board:</strong> <span id="headerBoardLabel"></span></span>
+                    <span><strong class="text-slate-500 font-medium">Level:</strong> <span id="headerLevelLabel"></span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Fallback Element used explicitly by code bindings to prevent crashes -->
+        <h2 id="formTitle" class="hidden">User Registration</h2>
         <p id="formSubtitle" class="text-center text-gray-500 mb-8">Enter your personal email to check your registration status.</p>
 
         <form id="myForm" class="space-y-6">
@@ -316,16 +335,26 @@ const showFormFields = () => {
     });
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+}
+
 const checkFormCode = async () => {
     if (!formCode) { formIdInput.value = 'default'; return }
     const { data } = await supabase.from('forms').select('id, title').eq('subjectid', formCode).maybeSingle()
     if (data) {
         formIdInput.value = data.id
         document.title = data.title
-        formTitleElement.innerHTML = `${data.title} <span class="font-bold text-black ml-2">Registration Form</span>`;
+        // Completely hidden title mapping bypasses showing standard "Registration Form" header structure strings.
+        formTitleElement.innerText = data.title;
         
-        // Fetch matching row details from subjects table to check termination constraints
-        const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate').eq('id', formCode).maybeSingle()
+        // Fetch matching row details from subjects table including relational fields to render beautiful UI headers
+        const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate, code, board, color, level, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
         if (subjectData) {
             const isEnded = subjectData.ended ?? false;
             let isExpired = false;
@@ -341,6 +370,53 @@ const checkFormCode = async () => {
                 showCourseExpired();
                 return;
             }
+
+            // Render Dynamic UI Layout Profile Elements
+            let teacherLabel = 'No Instructor Assigned';
+            let profilePicMarkup = `
+                <div class="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-3xl shadow-inner mx-auto mb-4">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            `;
+
+            if (subjectData.teachers) {
+                const titlePrefix = subjectData.teachers.title ? `${subjectData.teachers.title} ` : '';
+                const first = subjectData.teachers.firstname || '';
+                const last = subjectData.teachers.lastname || '';
+                const full = `${first} ${last}`.trim();
+                if (full) {
+                    teacherLabel = `${titlePrefix}${full}`;
+                }
+
+                if (subjectData.teachers.profilepicture && subjectData.teachers.profilepicture.trim() !== '') {
+                    profilePicMarkup = `
+                        <img src="${subjectData.teachers.profilepicture}" alt="${escapeHtml(full)}" class="w-24 h-24 rounded-full object-cover border-2 border-white shadow-md mx-auto mb-4" onerror="this.outerHTML='<div class=\'w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-3xl shadow-inner mx-auto mb-4\'><i class=\'fas fa-user-graduate\'></i></div>'"/>
+                    `;
+                } else if (full) {
+                    const initials = (first.charAt(0) + last.charAt(0)).toUpperCase();
+                    profilePicMarkup = `
+                        <div class="w-24 h-24 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xl border border-blue-100 shadow-sm mx-auto mb-4">
+                            ${escapeHtml(initials)}
+                        </div>
+                    `;
+                }
+            }
+
+            const customHexColor = (subjectData.color && subjectData.color.trim() !== '') ? subjectData.color : '#3b82f6';
+            const sessionTag = subjectData.code ? escapeHtml(subjectData.code) : 'Live';
+
+            document.getElementById('headerProfilePicContainer').innerHTML = profilePicMarkup;
+            document.getElementById('headerTeacherLabel').innerText = teacherLabel;
+            document.getElementById('headerBoardLabel').innerText = (subjectData.board || 'General').toLowerCase();
+            document.getElementById('headerLevelLabel').innerText = subjectData.level || 'N/A';
+            document.getElementById('headerBadge').innerText = sessionTag;
+            document.getElementById('headerBadge').style.backgroundColor = customHexColor;
+
+            const courseCardHeader = document.getElementById('courseCardHeader');
+            courseCardHeader.style.borderColor = `${customHexColor}40`;
+            courseCardHeader.style.backgroundColor = `${customHexColor}0a`;
+
+            document.getElementById('dynamicHeaderSection').classList.remove('hidden');
         }
     }
 }
