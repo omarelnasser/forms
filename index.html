@@ -66,15 +66,20 @@
                         Live
                     </span>
                     
-                    <div id="headerProfilePicContainer"></div>
+                    <!-- Centered Profile Picture Container -->
+                    <div id="headerProfilePicContainer" class="flex justify-center w-full"></div>
 
-                    <!-- Level and Board displays rearranged and made large and dominant -->
-                    <div class="flex flex-col gap-1 text-2xl font-extrabold text-slate-900 tracking-tight mb-2">
-                        <span id="headerLevelLabel"></span>
-                        <span id="headerBoardLabel" class="uppercase text-lg text-slate-600 font-bold"></span>
+                    <!-- Teacher Name & Registration Form Text Container -->
+                    <div class="flex items-center justify-center gap-2 mt-3 mb-2 flex-wrap">
+                        <h4 id="headerTeacherLabel" class="text-2xl font-bold text-[#4b4b4b] tracking-tight line-clamp-1"></h4>
+                        <span class="text-base text-gray-400 font-medium whitespace-nowrap">Registration Form</span>
                     </div>
 
-                    <h4 id="headerTeacherLabel" class="text-sm font-medium text-slate-400 line-clamp-1 mb-6"></h4>
+                    <!-- Level display remains, Board text element omitted from layout -->
+                    <div class="text-xl font-extrabold text-slate-900 tracking-tight mb-4">
+                        <span id="headerLevelLabel"></span>
+                        <span id="headerBoardLabel" class="hidden"></span>
+                    </div>
                 </div>
             </div>
 
@@ -395,7 +400,7 @@ const checkFormCode = async () => {
 
         let teacherLabel = 'No Instructor Assigned';
         let profilePicMarkup = `
-            <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xl shadow-inner mx-auto mb-4">
+            <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl shadow-inner mx-auto">
                 <i class="fas fa-user-tie"></i>
             </div>
         `;
@@ -411,12 +416,12 @@ const checkFormCode = async () => {
 
             if (subjectData.teachers.profilepicture && subjectData.teachers.profilepicture.trim() !== '') {
                 profilePicMarkup = `
-                    <img src="${subjectData.teachers.profilepicture}" alt="${escapeHtml(full)}" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md mx-auto mb-4" onerror="this.outerHTML='<div class=\'w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xl shadow-inner mx-auto mb-4\'><i class=\'fas fa-user-graduate\'></i></div>'"/>
+                    <img src="${subjectData.teachers.profilepicture}" alt="${escapeHtml(full)}" class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-md mx-auto" onerror="this.outerHTML='<div class=\'w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl shadow-inner mx-auto\'><i class=\'fas fa-user-graduate\'></i></div>'"/>
                 `;
             } else if (full) {
                 const initials = (first.charAt(0) + last.charAt(0)).toUpperCase();
                 profilePicMarkup = `
-                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-base border border-blue-100 shadow-sm mx-auto mb-4">
+                    <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-lg border border-blue-100 shadow-sm mx-auto">
                         ${escapeHtml(initials)}
                     </div>
                 `;
