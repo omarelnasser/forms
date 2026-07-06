@@ -85,7 +85,7 @@
                                     <span id="headerBoardLabel" class="text-slate-700 font-semibold truncate block mt-0.5"></span>
                                 </div>
                                 <div class="bg-white/60 rounded-lg p-2 border border-slate-100/70 shadow-sm">
-                                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Level</span>
+                                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Level / Class</span>
                                     <span id="headerLevelLabel" class="text-slate-700 font-semibold truncate block mt-0.5"></span>
                                 </div>
                             </div>
@@ -445,14 +445,13 @@ const checkFormCode = async () => {
         document.getElementById('headerProfilePicContainer').innerHTML = profilePicMarkup;
         document.getElementById('headerTeacherLabel').innerText = teacherLabel;
         
-        // Setting Board name and dynamically updating layout details to keep it beautiful
         const boardElement = document.getElementById('headerBoardLabel');
         boardElement.innerText = (subjectData.board || 'General');
-        boardElement.classList.remove('hidden'); // Making sure board text element stays active in our revised arrangement layout Block
+        boardElement.classList.remove('hidden');
         
-        // Appends " - sublevel" conditionally if data exists
+        // Appends " - sublevel" conditionally if sublevel data exists and is not empty
         let levelText = subjectData.level || 'N/A';
-        if (subjectData.sublevel) {
+        if (subjectData.sublevel && subjectData.sublevel.trim() !== '') {
             levelText += ` - ${subjectData.sublevel}`;
         }
         document.getElementById('headerLevelLabel').innerText = levelText;
