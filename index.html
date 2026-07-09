@@ -334,14 +334,13 @@ const showAlreadyRegistered = () => {
         </div>`
 }
 
-const showCourseExpired = () => {
-    const title = formTitleElement.innerText || "this subject"
+const showCourseExpired = (title) => {
     document.getElementById('formSubtitle').classList.add('hidden');
     document.getElementById('nextBtn').classList.add('hidden');
     document.getElementById('emailFieldGroup').innerHTML = `
         <div class="text-center p-4">
             <i class="fas fa-exclamation-triangle text-orange-500 text-5xl mb-4"></i>
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Course Expired</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Course Ended</h2>
             <p class="text-gray-600">Registration for <strong>${title}</strong> has closed because this course has ended.</p>
         </div>`;
 }
@@ -353,7 +352,7 @@ const showFormClosed = (title) => {
         <div class="text-center p-4">
             <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Registration Closed</h2>
-            <p class="text-gray-600">This form is not currently accepting registrations.</p>
+            <p class="text-gray-600">This form is no longer accepting registrations for <strong>${title}</strong>.</p>
         </div>`;
 }
 
@@ -443,11 +442,6 @@ const checkFormCode = async () => {
 
         document.getElementById('dynamicHeaderSection').classList.remove('hidden');
         
-        if (subjectData.form_on === false) {
-            showFormClosed(subjectData.subname || "this course");
-            return;
-        }
-
         const isEnded = subjectData.ended ?? false;
         let isExpired = false;
         if (subjectData.lastdate) {
@@ -459,7 +453,12 @@ const checkFormCode = async () => {
             } catch (_) {}
         }
         if (isEnded || isExpired) {
-            showCourseExpired();
+            showCourseExpired(subjectData.subname || "this course");
+            return;
+        }
+
+        if (subjectData.form_on === false) {
+            showFormClosed(subjectData.subname || "this course");
             return;
         }
     }
