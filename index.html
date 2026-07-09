@@ -101,7 +101,7 @@
             <form id="myForm" class="space-y-6">
                 <input type="hidden" id="formid" />
 
-                <div class="form-group">
+                <div class="form-group" id="emailFieldGroup">
                     <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                     <input type="email" id="email" placeholder="Enter your personal email" required class="input-field" />
                 </div>
@@ -336,27 +336,25 @@ const showAlreadyRegistered = () => {
 
 const showCourseExpired = () => {
     const title = formTitleElement.innerText || "this subject"
-    formContainer.innerHTML = `
-        <div class="text-center p-10">
-            <i class="fas fa-exclamation-triangle text-orange-500 text-6xl mb-4"></i>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Course Expired</h2>
-            <p class="text-gray-600 text-lg">Registration for <strong>${title}</strong> has closed because this course has ended.</p>
-            <div class="mt-8">
-                ${supportHtml}
-            </div>
-        </div>`
+    document.getElementById('formSubtitle').classList.add('hidden');
+    document.getElementById('nextBtn').classList.add('hidden');
+    document.getElementById('emailFieldGroup').innerHTML = `
+        <div class="text-center p-4">
+            <i class="fas fa-exclamation-triangle text-orange-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Course Expired</h2>
+            <p class="text-gray-600">Registration for <strong>${title}</strong> has closed because this course has ended.</p>
+        </div>`;
 }
 
 const showFormClosed = (title) => {
-    formContainer.innerHTML = `
-        <div class="text-center p-10">
-            <i class="fas fa-lock text-red-500 text-6xl mb-4"></i>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Registration Closed</h2>
-            <p class="text-gray-600 text-lg">This form is no longer accepting registrations for <strong>${title}</strong>.</p>
-            <div class="mt-8">
-                ${supportHtml}
-            </div>
-        </div>`
+    document.getElementById('formSubtitle').classList.add('hidden');
+    document.getElementById('nextBtn').classList.add('hidden');
+    document.getElementById('emailFieldGroup').innerHTML = `
+        <div class="text-center p-4">
+            <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Registration Closed</h2>
+            <p class="text-gray-600">This form is no longer accepting registrations for <strong>${title}</strong>.</p>
+        </div>`;
 }
 
 const showFormFields = () => {
@@ -388,26 +386,6 @@ const checkFormCode = async () => {
     if (subjectData) {
         document.title = subjectData.subname || "Live Course";
         formTitleElement.innerText = subjectData.subname || "Live Course";
-        
-        if (subjectData.form_on === false) {
-            showFormClosed(subjectData.subname || "this course");
-            return;
-        }
-
-        const isEnded = subjectData.ended ?? false;
-        let isExpired = false;
-        if (subjectData.lastdate) {
-            try {
-                const lastDate = new Date(subjectData.lastdate);
-                if (lastDate < new Date()) {
-                    isExpired = true;
-                }
-            } catch (_) {}
-        }
-        if (isEnded || isExpired) {
-            showCourseExpired();
-            return;
-        }
 
         let teacherLabel = 'No Instructor Assigned';
         let profilePicMarkup = `
@@ -464,6 +442,26 @@ const checkFormCode = async () => {
         courseDetailsWrapper.style.backgroundColor = `${customHexColor}0a`;
 
         document.getElementById('dynamicHeaderSection').classList.remove('hidden');
+        
+        if (subjectData.form_on === false) {
+            showFormClosed(subjectData.subname || "this course");
+            return;
+        }
+
+        const isEnded = subjectData.ended ?? false;
+        let isExpired = false;
+        if (subjectData.lastdate) {
+            try {
+                const lastDate = new Date(subjectData.lastdate);
+                if (lastDate < new Date()) {
+                    isExpired = true;
+                }
+            } catch (_) {}
+        }
+        if (isEnded || isExpired) {
+            showCourseExpired();
+            return;
+        }
     }
 }
 checkFormCode()
