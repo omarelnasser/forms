@@ -389,7 +389,7 @@ const checkFormCode = async () => {
         document.title = subjectData.subname || "Live Course";
         formTitleElement.innerText = subjectData.subname || "Live Course";
         
-        if (subjectData.form_on === false) {
+        if (subjectData.form_on === true) {
             showFormClosed(subjectData.subname || "this course");
             return;
         }
