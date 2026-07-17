@@ -154,6 +154,10 @@
                                     <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
                                     <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
                                     <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+                                    <option data-flag="https://flagcdn.com/w20/jo.png" value="+962">+962 (Jordan)</option>
+                                    <option data-flag="https://flagcdn.com/w20/lb.png" value="+961">+961 (Lebanon)</option>
+                                    <option data-flag="https://flagcdn.com/w20/ma.png" value="+212">+212 (Morocco)</option>
+                                    <option data-flag="https://flagcdn.com/w20/tn.png" value="+216">+216 (Tunisia)</option>
                                 </select>
                             </div>
                             <input type="tel" id="number" placeholder="Enter phone number" class="input-field phone-number-input" />
@@ -192,6 +196,10 @@
                                     <option data-flag="https://flagcdn.com/w20/om.png" value="+968">+968 (Oman)</option>
                                     <option data-flag="https://flagcdn.com/w20/kw.png" value="+965">+965 (Kuwait)</option>
                                     <option data-flag="https://flagcdn.com/w20/qa.png" value="+974">+974 (Qatar)</option>
+                                    <option data-flag="https://flagcdn.com/w20/jo.png" value="+962">+962 (Jordan)</option>
+                                    <option data-flag="https://flagcdn.com/w20/lb.png" value="+961">+961 (Lebanon)</option>
+                                    <option data-flag="https://flagcdn.com/w20/ma.png" value="+212">+212 (Morocco)</option>
+                                    <option data-flag="https://flagcdn.com/w20/tn.png" value="+216">+216 (Tunisia)</option>
                                 </select>
                             </div>
                             <input type="tel" id="parentnumber" placeholder="Enter phone number" class="input-field phone-number-input" />
@@ -263,7 +271,7 @@ const resendBtn = document.getElementById('resendBtn')
 const timerDisplay = document.getElementById('timerDisplay')
 
 let resendTimer = 0;
-const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8}
+const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968': 8, '+965': 8, '+974': 8, '+962': 9, '+961': 8, '+212': 9, '+216': 8}
 
 const validateEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
