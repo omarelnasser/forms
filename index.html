@@ -542,8 +542,21 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     const ln = capitalize(document.getElementById('lastname').value.trim())
     const pfn = capitalize(document.getElementById('parentfirstname').value.trim())
     const pln = capitalize(document.getElementById('parentlastname').value.trim())
-    const sFullNum = document.getElementById('country_code').value + document.getElementById('number').value.trim()
-    const pFullNum = document.getElementById('parent_country_code').value + document.getElementById('parentnumber').value.trim()
+
+    const sCode = document.getElementById('country_code').value
+    const sRawNum = document.getElementById('number').value.trim()
+    const pCode = document.getElementById('parent_country_code').value
+    const pRawNum = document.getElementById('parentnumber').value.trim()
+
+    const sFullNum = sCode + sRawNum
+    const pFullNum = pCode + pRawNum
+
+    if (phoneRules[sCode] && sRawNum.length !== phoneRules[sCode]) {
+        return alert(`❌ Student phone number must be exactly ${phoneRules[sCode]} digits.`);
+    }
+    if (phoneRules[pCode] && pRawNum.length !== phoneRules[pCode]) {
+        return alert(`❌ Parent phone number must be exactly ${phoneRules[pCode]} digits.`);
+    }
 
     if (pass !== confirmPass) return alert('❌ Passwords do not match.')
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
