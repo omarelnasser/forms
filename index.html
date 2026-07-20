@@ -387,7 +387,7 @@ const checkFormCode = async () => {
     
     formIdInput.value = formCode;
 
-    // Fetch matching details including sublevel column
+    // Fetch matching details including subname column
     const { data: subjectData } = await supabase.from('subjects').select('subname, ended, lastdate, code, board, color, level, sublevel, form_on, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
     
     if (subjectData) {
