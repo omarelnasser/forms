@@ -387,13 +387,9 @@ const checkFormCode = async () => {
     
     formIdInput.value = formCode;
 
-    // Fetch matching details including subname column
-    const { data: subjectData } = await supabase.from('subjects').select('subname, ended, lastdate, code, board, color, level, sublevel, form_on, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
+    const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate, code, board, color, level, sublevel, form_on, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
     
     if (subjectData) {
-        document.title = subjectData.subname || "Live Course";
-        formTitleElement.innerText = subjectData.subname || "Live Course";
-
         let teacherLabel = 'No Instructor Assigned';
         let profilePicMarkup = `
             <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl shadow-inner mx-auto">
@@ -461,12 +457,12 @@ const checkFormCode = async () => {
             } catch (_) {}
         }
         if (isEnded || isExpired) {
-            showCourseExpired(subjectData.subname || "this course");
+            showCourseExpired("this course");
             return;
         }
 
         if (subjectData.form_on === false) {
-            showFormClosed(subjectData.subname || "this course");
+            showFormClosed("this course");
             return;
         }
     }
