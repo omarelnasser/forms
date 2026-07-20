@@ -79,7 +79,7 @@
                             </div>
 
                             <!-- Styled Information Grid -->
-                            <div class="grid grid-cols-2 gap-2 pt-2 text-xs font-medium text-slate-600">
+                            <div class="grid grid-cols-3 gap-2 pt-2 text-xs font-medium text-slate-600">
                                 <div class="bg-white/60 rounded-lg p-2 border border-slate-100/70 shadow-sm">
                                     <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Board</span>
                                     <span id="headerBoardLabel" class="text-slate-700 font-semibold truncate block mt-0.5"></span>
@@ -87,6 +87,10 @@
                                 <div class="bg-white/60 rounded-lg p-2 border border-slate-100/70 shadow-sm">
                                     <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Level</span>
                                     <span id="headerLevelLabel" class="text-slate-700 font-semibold truncate block mt-0.5"></span>
+                                </div>
+                                <div class="bg-white/60 rounded-lg p-2 border border-slate-100/70 shadow-sm">
+                                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Subject</span>
+                                    <span id="headerSubjectNameLabel" class="text-slate-700 font-semibold truncate block mt-0.5"></span>
                                 </div>
                             </div>
                         </div>
@@ -387,7 +391,7 @@ const checkFormCode = async () => {
     
     formIdInput.value = formCode;
 
-    const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate, code, board, color, level, sublevel, form_on, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
+    const { data: subjectData } = await supabase.from('subjects').select('ended, lastdate, code, board, color, level, sublevel, subname, form_on, teachers(firstname, lastname, profilepicture, title)').eq('id', formCode).maybeSingle()
     
     if (subjectData) {
         let teacherLabel = 'No Instructor Assigned';
@@ -436,6 +440,10 @@ const checkFormCode = async () => {
             levelText += ` - ${subjectData.sublevel}`;
         }
         document.getElementById('headerLevelLabel').innerText = levelText;
+
+        const subnameElement = document.getElementById('headerSubjectNameLabel');
+        subnameElement.innerText = (subjectData.subname || 'N/A');
+        subnameElement.classList.remove('hidden');
         
         document.getElementById('headerBadge').innerText = sessionTag;
         document.getElementById('headerBadge').style.backgroundColor = customHexColor;
