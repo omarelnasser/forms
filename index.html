@@ -383,7 +383,7 @@ function escapeHtml(str) {
               .replace(/</g, "&lt;")
               .replace(/>/g, "&gt;")
               .replace(/"/g, "&quot;")
-              .replace(/'/g, "'");
+              .replace(/'/g, "&#039;");
 }
 
 const checkFormCode = async () => {
@@ -565,6 +565,21 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     if (pass !== confirmPass) return alert('❌ Passwords do not match.')
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
     if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
+    
+    // Check if both emails have a dot something at the end (apart from the @)
+    const emailDotRegex = /^[^@]+@[^@]+\.[^@]+$/;
+    if (!emailDotRegex.test(studentEmail)) {
+        return alert('❌ Student email must include a dot (.) somewhere after the @ symbol.');
+    }
+    if (!emailDotRegex.test(parentEmail)) {
+        return alert('❌ Parent email must include a dot (.) somewhere after the @ symbol.');
+    }
+
+    // Make sure phone numbers of parent and student are not the same
+    if (sFullNum === pFullNum) {
+        return alert('❌ Student phone number and Parent phone number cannot be the same.');
+    }
+
     if (!isOlderThan14(dob)) return alert('❌ Student must be at least 14 years old.')
 
     const submitBtn = document.getElementById('submitBtn')
