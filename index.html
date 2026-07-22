@@ -254,6 +254,25 @@
         </div>
     </div>
 
+    <!-- Parent Verification Modal Template -->
+    <div id="parentModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl transform transition-all">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Is this your parent?</h3>
+            <div class="flex justify-center mb-3">
+                <div id="parentModalAvatar" class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xl overflow-hidden border border-slate-200">
+                    <i class="fas fa-person"></i>
+                </div>
+            </div>
+            <h4 id="parentModalName" class="font-bold text-lg text-gray-800 mb-1"></h4>
+            <p id="parentModalEmail" class="text-sm text-gray-600 mb-0.5"></p>
+            <p id="parentModalPhone" class="text-sm text-gray-600 mb-6"></p>
+            <div class="flex gap-3">
+                <button type="button" id="parentModalNoBtn" class="flex-1 py-2.5 px-4 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 font-semibold transition">No</button>
+                <button type="button" id="parentModalYesBtn" class="flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition">Yes</button>
+            </div>
+        </div>
+    </div>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -279,6 +298,24 @@ const phoneRules = {'+20': 10, '+249': 9, '+971': 9, '+966': 9, '+973': 8, '+968
 
 const validateEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+
+const maskEmail = (email) => {
+    if (!email || !email.includes('@')) return email;
+    const parts = email.split('@');
+    const name = parts[0];
+    const domain = parts[1];
+    if (name.length <= 3) return email;
+    const visible = name.substring(name.length - 3);
+    const masked = "*".repeat(name.length - 3);
+    return `${masked}${visible}@${domain}`;
+}
+
+const maskPhone = (phone) => {
+    if (!phone || phone.length <= 4) return phone;
+    const visible = phone.substring(phone.length - 4);
+    const masked = "*".repeat(phone.length - 4);
+    return `${masked}${visible}`;
+}
 
 const isOlderThan14 = (dob) => {
     const today = new Date(); const birthDate = new Date(dob)
@@ -434,7 +471,6 @@ const checkFormCode = async () => {
         boardElement.innerText = (subjectData.board || 'General');
         boardElement.classList.remove('hidden');
         
-        // Appends " - sublevel" conditionally if sublevel data exists and is not empty
         let levelText = subjectData.level || 'N/A';
         if (subjectData.sublevel && subjectData.sublevel.trim() !== '') {
             levelText += ` - ${subjectData.sublevel}`;
@@ -533,6 +569,41 @@ const setupPhoneInput = (selectId, inputId, flagId) => {
 setupPhoneInput('country_code', 'number', 'flag_user')
 setupPhoneInput('parent_country_code', 'parentnumber', 'flag_parent')
 
+const showParentVerificationDialog = (parent) => {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('parentModal');
+        const avatarContainer = document.getElementById('parentModalAvatar');
+        const nameEl = document.getElementById('parentModalName');
+        const emailEl = document.getElementById('parentModalEmail');
+        const phoneEl = document.getElementById('parentModalPhone');
+        const yesBtn = document.getElementById('parentModalYesBtn');
+        const noBtn = document.getElementById('parentModalNoBtn');
+
+        const picUrl = parent['profilepictureurl'] || parent['profilepicture'] || '';
+        if (picUrl && picUrl.trim() !== '') {
+            avatarContainer.innerHTML = `<img src="${picUrl}" class="w-full h-full object-cover" />`;
+        } else {
+            avatarContainer.innerHTML = `<i class="fas fa-person"></i>`;
+        }
+
+        nameEl.textContent = `${parent['parentfirstname'] || ''} ${parent['parentlastname'] || ''}`.trim();
+        emailEl.textContent = maskEmail(parent['parentemail'] || '');
+        phoneEl.textContent = maskPhone(parent['parentnumber'] || '');
+
+        modal.classList.remove('hidden');
+
+        const cleanup = (result) => {
+            modal.classList.add('hidden');
+            yesBtn.replaceWith(yesBtn.cloneNode(true));
+            noBtn.replaceWith(noBtn.cloneNode(true));
+            resolve(result);
+        };
+
+        document.getElementById('parentModalYesBtn').onclick = () => cleanup(true);
+        document.getElementById('parentModalNoBtn').onclick = () => cleanup(false);
+    });
+};
+
 document.getElementById('myForm').addEventListener('submit', async (e) => {
     e.preventDefault()
     
@@ -566,7 +637,6 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     if (pass.length < 6) return alert('❌ Password must be at least 6 characters.')
     if (studentEmail === parentEmail) return alert('❌ Parent Email cannot be the same as Student Email.')
     
-    // Check if both emails have a dot something at the end (apart from the @)
     const emailDotRegex = /^[^@]+@[^@]+\.[^@]+$/;
     if (!emailDotRegex.test(studentEmail)) {
         return alert('❌ Student email must include a dot (.) somewhere after the @ symbol.');
@@ -575,7 +645,6 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
         return alert('❌ Parent email must include a dot (.) somewhere after the @ symbol.');
     }
 
-    // Make sure phone numbers of parent and student are not the same
     if (sFullNum === pFullNum) {
         return alert('❌ Student phone number and Parent phone number cannot be the same.');
     }
@@ -586,13 +655,32 @@ document.getElementById('myForm').addEventListener('submit', async (e) => {
     submitBtn.disabled = true; submitBtn.textContent = "Processing..."
 
     try {
+        const { data: existingStudents } = await supabase
+            .from('students')
+            .select()
+            .or(`email.eq.${studentEmail},phonenumber.eq.${sFullNum}`);
+        if (existingStudents && existingStudents.length > 0) {
+            submitBtn.disabled = false; submitBtn.textContent = "Submit Registration";
+            return alert("❌ Student already registered.");
+        }
+
+        const { data: existingParents } = await supabase
+            .from('parents')
+            .select()
+            .or(`parentemail.eq.${parentEmail},parentnumber.eq.${pFullNum}`);
+
         let parentId;
-        const { data: existingParent } = await supabase.from('parents').select('id').eq('parentemail', parentEmail).maybeSingle();
-        if (existingParent) {
-            parentId = existingParent.id;
+        const parentGeneratedPassword = generateRandomNumericPassword();
+
+        if (existingParents && existingParents.length > 0) {
+            const useExisting = await showParentVerificationDialog(existingParents[0]);
+            if (useExisting === true) {
+                parentId = existingParents[0]['id'];
+            } else {
+                submitBtn.disabled = false; submitBtn.textContent = "Submit Registration";
+                return alert("❌ Parent details already in use. Please choose another.");
+            }
         } else {
-            const parentGeneratedPassword = generateRandomNumericPassword();
-            
             const { error: pAuthErr } = await supabase.auth.signUp({
                 phone: pFullNum,
                 password: parentGeneratedPassword,
